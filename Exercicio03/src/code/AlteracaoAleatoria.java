@@ -15,17 +15,38 @@ public class AlteracaoAleatoria {
 	/**
 	 * @param args
 	 */
-	public static void sorteio(String p1,String p2)
+    public static void sorteio(String f1,String f2)
     {
+        Random gerador =  new Random();
+
         char s1;
         char s2;
+        int valor = gerador.nextInt(26) + 1;
 
-        Random gerador =  new Random();
+        char frase1 [] = new char [f1.length()];
+        char frase2 [] = new char [f2.length()];
+
         gerador.setSeed(4);
         //System.out.println((char)('a' + Math.abs(gerador.nextInt())% 26));
         s1 = (char)('a' + Math.abs(gerador.nextInt())% 26);
-        gerador.setSeed(4);
+        gerador.setSeed(valor);
         s2 = (char)('a' + Math.abs(gerador.nextInt())% 26);
+
+        System.out.println("O letra sorteada foi: " + s2);
+
+           for(int i=0;i < f1.length() ;i++)
+           {
+               if(s1 == f1.charAt(i))
+                    frase1[i] = s2;
+               else
+               {
+                   frase1[i] = f1.charAt(i);
+               }
+           }
+
+        for(int i=0; i < f1.length() ;i++)
+            System.out.print(frase1[i]);
+
 
     }
 
@@ -47,3 +68,4 @@ public class AlteracaoAleatoria {
     }
 
 }
+

@@ -6,6 +6,7 @@ import java.io.*;
 import java.util.Random;
 import java.util.Scanner;
 
+
 /**
  * @author josem
  *
@@ -32,7 +33,7 @@ public class AlteracaoAleatoria {
         gerador.setSeed(valor);
         s2 = (char)('a' + Math.abs(gerador.nextInt())% 26);
 
-        System.out.println("O letra sorteada foi: " + s2);
+        System.out.println("A letra sorteada foi: " + s2);
 
            for(int i=0;i < f1.length() ;i++)
            {

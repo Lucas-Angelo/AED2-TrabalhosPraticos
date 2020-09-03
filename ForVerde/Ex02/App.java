@@ -1,5 +1,3 @@
-package code;
-
 import java.io.*;
 import java.nio.charset.*;
 
@@ -241,7 +239,7 @@ class MyIO {
 
 
 
-public class PalindromoIterativo {
+public class App {
 
 	/**
 	 * @param args

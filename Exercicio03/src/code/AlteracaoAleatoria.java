@@ -1,7 +1,6 @@
 /**
  * 
  */
-package code;
 import java.util.Random;
 import java.io.*;
 import java.nio.charset.*;

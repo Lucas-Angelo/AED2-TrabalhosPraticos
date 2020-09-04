@@ -1,5 +1,7 @@
-package code;
-
+/**
+ * 
+ */
+import java.util.Random;
 import java.io.*;
 import java.nio.charset.*;
 
@@ -239,47 +241,54 @@ class MyIO {
    }
 }
 
-
-
-public class PalindromoIterativo {
+public class AlteracaoAleatoria {
 
 	/**
 	 * @param args
-	 * @throws IOException 
 	 */
-	public static void main(String[] args) throws IOException {
-		
-		String texto, invertida;
-		boolean igual, finaliza=false;
-		BufferedReader entrada = new BufferedReader(new InputStreamReader(System.in));
-		
-		
-		do {
-			texto = MyIO.readLine();
-			igual = true;
-			invertida = "";
-			
-			if(texto.charAt(0)=='F' && texto.charAt(1)=='I' && texto.charAt(2)=='M')
-				finaliza=true;
-			
-			if(finaliza!=true){
-				for(int i=0;i<texto.length();i++) {
-					invertida = invertida + texto.charAt(texto.length()-i-1);
-				}
-				
-				for(int i=0;i<texto.length();i++) {
-					if(texto.charAt(i)!=invertida.charAt(i))
-						igual = false;
-				}
-				
-				if(igual)
-					MyIO.println("SIM");
-				else
-					MyIO.println("NAO");
-			}
-			
-		} while (finaliza!=true);
+    public static void sorteio(String f)
+    {
+        Random gerador =  new Random();
 
-	}
+        char s1;
+        char s2;
+        String frase = new String("");
+
+        gerador.setSeed(4);
+        //System.out.println((char)('a' + Math.abs(gerador.nextInt())% 26));
+        s1 = (char)('a' + Math.abs(gerador.nextInt())% 26);
+        s2 = (char)('a' + Math.abs(gerador.nextInt())% 26);
+       
+
+           for(int i=0;i < f.length() ;i++){
+               if(s1 == f.charAt(i)) {
+                    frase += s2;
+               }
+               else {
+                   frase += f.charAt(i);
+               }
+           }
+          
+           MyIO.println(frase);
+           
+    }
+
+    public static void main(String[] args) throws IOException {
+        String f;
+        int cont=0;
+        
+        do {
+        	f = MyIO.readLine();
+        	if (! f.equals("FIM")) 
+        		sorteio (f);
+        } while(! f.equals("FIM"));
+        
+        
+     
+        // char l =f2.charAt(0);
+        //System.out.println("arwr"+l);
+
+    }
 
 }
+

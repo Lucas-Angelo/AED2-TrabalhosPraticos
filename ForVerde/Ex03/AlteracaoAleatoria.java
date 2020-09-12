@@ -241,7 +241,7 @@ class MyIO {
    }
 }
 
-public class AlteracaoAleatoria {
+public class App {
 
 	/**
 	 * @param args

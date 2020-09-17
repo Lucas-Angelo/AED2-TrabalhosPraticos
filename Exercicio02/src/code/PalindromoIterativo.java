@@ -247,38 +247,39 @@ public class PalindromoIterativo {
 	 * @param args
 	 * @throws IOException 
 	 */
+	
+	public static boolean isPalindromo(String str) {
+		boolean igual = true;
+		String invertida = "";
+		
+		for(int i=0;i<str.length();i++) {
+			invertida = invertida + str.charAt(str.length()-i-1);
+		}
+		
+		for(int i=0;i<str.length();i++) {
+			if(str.charAt(i)!=invertida.charAt(i))
+				igual = false;
+		}
+		
+		return igual;
+	}
+	
 	public static void main(String[] args) throws IOException {
 		
-		String texto, invertida;
-		boolean igual, finaliza=false;
-		BufferedReader entrada = new BufferedReader(new InputStreamReader(System.in));
+		String str;
 		
 		
 		do {
-			texto = MyIO.readLine();
-			igual = true;
-			invertida = "";
-			
-			if(texto.charAt(0)=='F' && texto.charAt(1)=='I' && texto.charAt(2)=='M')
-				finaliza=true;
-			
-			if(finaliza!=true){
-				for(int i=0;i<texto.length();i++) {
-					invertida = invertida + texto.charAt(texto.length()-i-1);
-				}
+			str = MyIO.readLine();
 				
-				for(int i=0;i<texto.length();i++) {
-					if(texto.charAt(i)!=invertida.charAt(i))
-						igual = false;
-				}
-				
-				if(igual)
+			if(!(str.equals("FIM"))) {
+				if(isPalindromo(str))
 					MyIO.println("SIM");
 				else
 					MyIO.println("NAO");
 			}
 			
-		} while (finaliza!=true);
+		} while (!(str.equals("FIM")));
 
 	}
 

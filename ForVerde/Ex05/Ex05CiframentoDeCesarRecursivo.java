@@ -1,7 +1,7 @@
 import java.io.*;
 import java.nio.charset.*;
 
-public class App {
+public class Ex05CiframentoDeCesarRecursivo {
     public static void main(String[] args) throws Exception {
 
         String str = new String();
@@ -15,18 +15,21 @@ public class App {
         }while (!isFIM);
 
     }
-    private static String cifrarDeCesar (String str){
+    public static String cifrarDeCesar (String str){
+        return cifrarDeCesar(str, 0, str.length());
+    }
+    private static String cifrarDeCesar (String str, int i, int length){
         String cifra = new String ("");
         char newChar;
-        int i;
 
-        for (i=0;i<str.length();i++){
+        if (i==length)
+            cifra = "";
+        else{
             newChar = (char)( (int)str.charAt(i) + 3 );
-            cifra += newChar;
+            cifra = newChar + cifrarDeCesar(str, i+1, length);
         }
 
         return cifra;
-
     }
 }
 
@@ -266,4 +269,3 @@ class MyIO {
       pause();
    }
 }
-

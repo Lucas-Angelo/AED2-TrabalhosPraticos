@@ -239,38 +239,39 @@ class MyIO {
 
 
 
-public class PalindromoRecursivo {
+public class Ex02PalindromoIterativoJava {
 
 	/**
 	 * @param args
 	 * @throws IOException 
 	 */
-	private static boolean isRecursivo (String str, int indice) {
-		boolean igual;
+	
+	public static boolean isPalindromo(String str) {
+		boolean igual = true;
+		String invertida = "";
 		
-		if (str.length() == indice)
-			igual = true;
-		else if(str.charAt(indice)!=str.charAt(str.length()-indice-1))
-			igual = false;
-		else
-			igual = isRecursivo (str, ++indice);
-			
-		return igual;	
+		for(int i=0;i<str.length();i++) {
+			invertida = invertida + str.charAt(str.length()-i-1);
+		}
+		
+		for(int i=0;i<str.length();i++) {
+			if(str.charAt(i)!=invertida.charAt(i))
+				igual = false;
+		}
+		
+		return igual;
 	}
 	
-	public static boolean passarString (String str) {
-		return isRecursivo (str, 0);
-	}
-		
 	public static void main(String[] args) throws IOException {
 		
 		String str;
-			
+		
+		
 		do {
 			str = MyIO.readLine();
 				
 			if(!(str.equals("FIM"))) {
-				if(passarString(str))
+				if(isPalindromo(str))
 					MyIO.println("SIM");
 				else
 					MyIO.println("NAO");

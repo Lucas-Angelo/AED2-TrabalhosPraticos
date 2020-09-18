@@ -1,6 +1,36 @@
 import java.io.*;
 import java.nio.charset.*;
 
+public class Ex01CiframentoDeCesarIterativo {
+    public static void main(String[] args) throws Exception {
+
+        String str = new String();
+        boolean isFIM;
+
+        do{
+            str = MyIO.readLine();
+            isFIM = str.length()== 3 && str.charAt(0) == 'F' && str.charAt(1) == 'I' && str.charAt(2) == 'M' ;
+            if (!isFIM)
+                MyIO.println(cifrarDeCesar(str));
+        }while (!isFIM);
+
+    }
+    private static String cifrarDeCesar (String str){
+        String cifra = new String ("");
+        char newChar;
+        int i;
+
+        for (i=0;i<str.length();i++){
+            newChar = (char)( (int)str.charAt(i) + 3 );
+            cifra += newChar;
+        }
+
+        return cifra;
+
+    }
+}
+
+
 class MyIO {
 
    private static BufferedReader in = new BufferedReader(new InputStreamReader(System.in, Charset.forName("ISO-8859-1")));
@@ -237,48 +267,3 @@ class MyIO {
    }
 }
 
-
-
-public class App {
-
-	/**
-	 * @param args
-	 * @throws IOException 
-	 */
-	
-	public static boolean isPalindromo(String str) {
-		boolean igual = true;
-		String invertida = "";
-		
-		for(int i=0;i<str.length();i++) {
-			invertida = invertida + str.charAt(str.length()-i-1);
-		}
-		
-		for(int i=0;i<str.length();i++) {
-			if(str.charAt(i)!=invertida.charAt(i))
-				igual = false;
-		}
-		
-		return igual;
-	}
-	
-	public static void main(String[] args) throws IOException {
-		
-		String str;
-		
-		
-		do {
-			str = MyIO.readLine();
-				
-			if(!(str.equals("FIM"))) {
-				if(isPalindromo(str))
-					MyIO.println("SIM");
-				else
-					MyIO.println("NAO");
-			}
-			
-		} while (!(str.equals("FIM")));
-
-	}
-
-}

@@ -1,12 +1,3 @@
-/**
- * 
- */
-
-/**
- * @author Lucas Ângelo O. M. Rocha
- * github.com/Lucas-Angelo
- */
-
 import java.io.*;
 import java.nio.charset.*;
 
@@ -248,135 +239,44 @@ class MyIO {
 
 
 
-public class App {
+public class Ex06PalindromoRecursivoJava {
 
 	/**
 	 * @param args
+	 * @throws IOException 
 	 */
-	
-	private static boolean somenteVogais(String str, int indice) {
-		boolean res = true;
+	private static boolean isRecursivo (String str, int indice) {
+		boolean igual;
 		
-		if(str.length()==indice)
-			res=true;
-		else if (str.charAt(indice)!='A' && str.charAt(indice)!='E' && str.charAt(indice)!='I' && str.charAt(indice)!='O' && str.charAt(indice)!='U' && str.charAt(indice)!='a' && str.charAt(indice)!='e' && str.charAt(indice)!='i' && str.charAt(indice)!='o' && str.charAt(indice)!='u')
-			res = false;
+		if (str.length() == indice)
+			igual = true;
+		else if(str.charAt(indice)!=str.charAt(str.length()-indice-1))
+			igual = false;
 		else
-			res = somenteVogais(str, ++indice);
-		
-		return res;
-		
-	}
-		
-	
-	private static boolean somenteConsoantes(String str, int indice) {
-		
-		boolean res = true;
-		
-		if(str.length()==indice) 
-			res=true;
-		else if(str.charAt(indice)!='B' && str.charAt(indice)!='C' && str.charAt(indice)!='D' && str.charAt(indice)!='F' && str.charAt(indice)!='G' && str.charAt(indice)!='H' && str.charAt(indice)!='J' && str.charAt(indice)!='K' && str.charAt(indice)!='L' && str.charAt(indice)!='M' && str.charAt(indice)!='N' && str.charAt(indice)!='P' && str.charAt(indice)!='Q' && str.charAt(indice)!='R' && str.charAt(indice)!='S' && str.charAt(indice)!='T' && str.charAt(indice)!='V' && str.charAt(indice)!='W' && str.charAt(indice)!='X' && str.charAt(indice)!='Y' && str.charAt(indice)!='Z' && str.charAt(indice)!='b' && str.charAt(indice)!='c' && str.charAt(indice)!='d' && str.charAt(indice)!='f' && str.charAt(indice)!='g' && str.charAt(indice)!='h' && str.charAt(indice)!='j' && str.charAt(indice)!='k' && str.charAt(indice)!='l' && str.charAt(indice)!='m' && str.charAt(indice)!='n' && str.charAt(indice)!='p' && str.charAt(indice)!='q' && str.charAt(indice)!='r' && str.charAt(indice)!='s' && str.charAt(indice)!='t' && str.charAt(indice)!='v' && str.charAt(indice)!='w' && str.charAt(indice)!='x' && str.charAt(indice)!='y' && str.charAt(indice)!='z')				
-			res = false;
-		else
-			res = somenteConsoantes(str, ++indice);
-		
-		return res;
-		
+			igual = isRecursivo (str, ++indice);
+			
+		return igual;	
 	}
 	
-	private static boolean isInteiro(String str, int indice) {
-		
-		boolean res = true;
-		
-		if(str.length()==indice)
-			res=true;
-		else if (!(str.charAt(indice)>='0' && str.charAt(indice)<='9')) 
-			res = false;
-		else
-			res = isInteiro(str, ++indice);
-		
-		return res;
-		
+	public static boolean passarString (String str) {
+		return isRecursivo (str, 0);
 	}
-	
-	private static boolean isReal(String str, int indice, int cont) {
 		
-		boolean res = true;
-		
-		if(str.length()==indice)
-			res=true;
-		else if ((!(str.charAt(indice)>='0' && str.charAt(indice)<='9') && (str.charAt(indice)!=',' && str.charAt(indice)!='.')) || cont>1) {
-			res = false;
-		}
-		else {
-			if(str.charAt(indice)=='.' || str.charAt(indice)==',')
-				++cont;
-			res = isReal(str, ++indice, cont);
-		}
-		
-		if(!(res==true && (cont==0 || cont==1)))
-			res = false;
-
-		return res;
-		
-	}
-	
-	public static boolean passarSomenteVogais(String str) {
-		return somenteVogais(str, 0);
-	}
-	
-	public static boolean passarSomenteConsoantes(String str) {
-		return somenteConsoantes(str, 0);
-	}
-	
-	public static boolean passarSomenteInteiro(String str) {
-		return isInteiro(str, 0);
-	}
-	
-	public static boolean passarSomenteReal(String str) {
-		return isReal(str, 0, 0);
-	}
-	
-	public static void main(String[] args) {
-		// TODO Auto-generated method stub
+	public static void main(String[] args) throws IOException {
 		
 		String str;
-		
+			
 		do {
 			str = MyIO.readLine();
-			
-			if(!str.equals("FIM"))
-			{
-				if(passarSomenteVogais(str)) {
-					MyIO.print("SIM ");
-				}
-				else {
-					MyIO.print("NAO ");
-				}
 				
-				if(passarSomenteConsoantes(str)) {
-					MyIO.print("SIM ");
-				}
-				else {
-					MyIO.print("NAO ");
-				}
-				
-				if(passarSomenteInteiro(str)) {
-					MyIO.print("SIM ");
-				}
-				else {
-					MyIO.print("NAO ");
-				}
-				
-				if(passarSomenteReal(str)) {
+			if(!(str.equals("FIM"))) {
+				if(passarString(str))
 					MyIO.println("SIM");
-				}
-				else {
+				else
 					MyIO.println("NAO");
-				}
 			}
 			
-		} while(!str.equals("FIM"));
+		} while (!(str.equals("FIM")));
 
 	}
 

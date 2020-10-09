@@ -1,8 +1,16 @@
-import java.io.BufferedReader;
-import java.io.FileNotFoundException;
-import java.io.FileReader;
+import java.io.*;
 
-public class Jogador {
+public class App {
+
+	public static void main(String[] args) {
+		// TODO Auto-generated method stub
+		Jogador player[] = new Jogador[10];
+		
+	}
+
+}
+
+class Jogador {
 
 	private int id;
 	private String nome = new String();
@@ -97,17 +105,7 @@ public class Jogador {
 	// Fim SETS
 	
 	public Jogador clone() {
-		
 		Jogador jogador = new Jogador();
-		jogador.id = this.id;
-		jogador.nome = this.nome;
-		jogador.altura = this.altura;
-		jogador.peso = this.peso;
-		jogador.universidade = this.universidade;
-		jogador.anoNascimento = this.anoNascimento;
-		jogador.cidadeNascimento = this.cidadeNascimento;
-		jogador.estadoNascimento = this.estadoNascimento;
-		
 		return jogador;
 	}
 	

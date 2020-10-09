@@ -9,99 +9,69 @@ public class App {
 		
 		ArquivoTextoLeitura leitura = new ArquivoTextoLeitura();
 		
-		String linhaLida;
+		int qtdJogadores = qtdLinhas(leitura);
 		
-		Jogador player = new Jogador();
-
-		
+		Jogador[] players = preencherVetorJogador(leitura, qtdJogadores);
 		
 		do {
 			idInformado = in.readLine();
 			
 			if(!(idInformado.equals("FIM"))) {
 				
-				leitura.abrirArquivo("/tmp/players.csv");
-				
-				leitura.ler(); // O cabecalho, tem que pular a primeira linha
-				linhaLida = leitura.ler();
-	            while (linhaLida != null){
-	            	
-	                String[] linhasArray = linhaLida.split("\n"); // Capturar linha
-	                
-	                for(String linhaUnica : linhasArray)
-	                {
-	                    
-	                    String[] dadosDaLinha = linhaUnica.split(",", 8); // Dividir os dados da linha
-	                    
-	                    // Setar dados da jogador atual na classe.
-	                    if( idInformado.equals(dadosDaLinha[0].toString())) {
-		                    player.setId(Integer.parseInt((dadosDaLinha[0].toString()))); // Transforma array em string, para transformar em int
-		                    player.setNome(dadosDaLinha[1].toString());
-		                    player.setAltura(Integer.parseInt((dadosDaLinha[2].toString())));
-		                    player.setPeso(Integer.parseInt((dadosDaLinha[3].toString())));
-		                    player.setUniversidade(dadosDaLinha[4].toString());
-		                    player.setAnoNascimento(Integer.parseInt((dadosDaLinha[5].toString())));
-		                    player.setCidadeNascimento(dadosDaLinha[6].toString());
-		                    player.setEstadoNascimento(dadosDaLinha[7].toString());
-	                    }
-	                    
-	                }
-                    
-	                linhaLida = leitura.ler();
-	            }
-	            
-	            player.imprimir();
-				
-				leitura.fecharArquivo();
+				players[Integer.parseInt(idInformado)].imprimir();;
 				
 			}
 			
-		} while (!(idInformado.equals("FIM")));
+		} while ( !(idInformado.equals("FIM")) );
 		
-	}
-
-}
-
-class ArquivoTextoLeitura {
-
-	private BufferedReader entrada;
-	
-	public void abrirArquivo(String nomeArquivo){	
-		
-		try {
-			entrada = new BufferedReader(new FileReader(nomeArquivo));
-		}
-		catch (FileNotFoundException excecao) {
-			System.out.println("Arquivo não encontrado");
-		}
 	}
 	
-	public void fecharArquivo() {
+	public static int qtdLinhas (ArquivoTextoLeitura leitura) {
+		int qtd=0;
+		String linhaLida = new String();
+		leitura.abrirArquivo("/tmp/players.csv");
 		
-		try {
-			entrada.close();
-		}
-		catch (IOException excecao) {
-			System.out.println("Erro no fechamento do arquivo de leitura: " + excecao);	
-		}
+		leitura.ler(); // O cabecalho, tem que pular a primeira linha
+		linhaLida = leitura.ler();
+        while (linhaLida != null){
+        	qtd++;
+        	linhaLida = leitura.ler();
+        } 
+		
+		leitura.fecharArquivo();
+		
+		return qtd;
 	}
 	
-	public String ler() {
+	public static Jogador[] preencherVetorJogador (ArquivoTextoLeitura leitura, int qtdLinhas) {
+		Jogador[] players = new Jogador[qtdLinhas];
+
+		for(int i=0; i<qtdLinhas; i++)
+			players[i] = new Jogador();
 		
-		String textoEntrada;
+		leitura.abrirArquivo("/tmp/players.csv");
 		
-		try {
-			textoEntrada = entrada.readLine();
-		}
-		catch (EOFException excecao) { //Exceção de final de arquivo.
-			return null;
-		}
-		catch (IOException excecao) {
-			System.out.println("Erro de leitura: " + excecao);
-			return null;
-		}
-		return textoEntrada;
+		leitura.ler(); // Remove o cabecalho
+        for(int i=0; i<qtdLinhas; i++) {
+            
+            String[] dadosDaLinha = leitura.ler().split(",", 8); // Dividir os dados da linha
+                
+            players[i].setId(Integer.parseInt((dadosDaLinha[0].toString()))); // Transforma array em string, para transformar em int
+            players[i].setNome(dadosDaLinha[1].toString());
+            players[i].setAltura(Integer.parseInt((dadosDaLinha[2].toString())));
+            players[i].setPeso(Integer.parseInt((dadosDaLinha[3].toString())));
+            players[i].setUniversidade(dadosDaLinha[4].toString());
+            players[i].setAnoNascimento(Integer.parseInt((dadosDaLinha[5].toString())));
+            players[i].setCidadeNascimento(dadosDaLinha[6].toString());
+            players[i].setEstadoNascimento(dadosDaLinha[7].toString());
+            
+        }
+		
+		leitura.fecharArquivo();
+		
+		return players;
 	}
+
 }
 
 class Jogador {
@@ -199,7 +169,17 @@ class Jogador {
 	// Fim SETS
 	
 	public Jogador clone() {
+		
 		Jogador jogador = new Jogador();
+		jogador.id = this.id;
+		jogador.nome = this.nome;
+		jogador.altura = this.altura;
+		jogador.peso = this.peso;
+		jogador.universidade = this.universidade;
+		jogador.anoNascimento = this.anoNascimento;
+		jogador.cidadeNascimento = this.cidadeNascimento;
+		jogador.estadoNascimento = this.estadoNascimento;
+		
 		return jogador;
 	}
 	
@@ -240,3 +220,46 @@ class Jogador {
 	
 
 }
+
+class ArquivoTextoLeitura {
+
+	private BufferedReader entrada;
+	
+	public void abrirArquivo(String nomeArquivo){	
+		
+		try {
+			entrada = new BufferedReader(new FileReader(nomeArquivo));
+		}
+		catch (FileNotFoundException excecao) {
+			System.out.println("Arquivo nÃ£o encontrado");
+		}
+	}
+	
+	public void fecharArquivo() {
+		
+		try {
+			entrada.close();
+		}
+		catch (IOException excecao) {
+			System.out.println("Erro no fechamento do arquivo de leitura: " + excecao);	
+		}
+	}
+	
+	public String ler() {
+		
+		String textoEntrada;
+		
+		try {
+			textoEntrada = entrada.readLine();
+		}
+		catch (EOFException excecao) { //ExceÃ§Ã£o de final de arquivo.
+			return null;
+		}
+		catch (IOException excecao) {
+			System.out.println("Erro de leitura: " + excecao);
+			return null;
+		}
+		return textoEntrada;
+	}
+}
+

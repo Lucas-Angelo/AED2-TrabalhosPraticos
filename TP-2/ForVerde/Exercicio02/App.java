@@ -1,23 +1,40 @@
 import java.io.*;
 
 public class App {
+	
+	/*
+	 * Considerações:
+	 * 1- Para o log, colocamos 3 matrículas dos integrantes do 
+	 * nosso grupo separadas por vírgulas, em seguidas os outros dados
+	 * 
+	 * 2- Não preenchemos nosso vetor que possuia todos os jogadores removendo o asterisco do nome,
+	 * criamos o código para fazer isso, mas deixamos comentado. Para verificar se o nome informado
+	 * existia e printar SIM/NAO nós verificamos o nome com e sem o asterisco. Com isso não alteramos
+	 * a tabela original, apenas o que era solicitado, diante disso, algumas comparações a mais foram
+	 * necessárias para chegar em 100%.
+	 * 
+	 * 3- Em relação ao número de comparações, foi contado apenas as comparações dentro da main, pois
+	 * nas as outras funcoes sao as genericas vindas da questão 1.
+	 * 
+	 */
 
 	public static void main(String[] args) throws IOException {
+		int comparacoes=0; // Para o log
 		
-		long inicio = System.currentTimeMillis();
+		long inicio = System.currentTimeMillis(); // Para o log
 		
 		BufferedReader in = new BufferedReader(new InputStreamReader(System.in));
 		String entrada = new String();
 		
 		ArquivoTextoLeitura leitura = new ArquivoTextoLeitura();
 		
-		int qtdJogadores = qtdLinhas(leitura);
+		int qtdJogadores = qtdLinhas(leitura); // Cada linha é um jogador, procurar o número de linhas pra facilitar
+		int i=0; // Utilizado para selecionar posicoes do vetor com alguns jogadores, e no final saber quantos jogadores tem no vetor
+		int z=0;
+		int qtdJogadoresVetor;
 		
 		Jogador[] players = preencherVetorJogador(leitura, qtdJogadores);
 		Jogador[] vetor = new Jogador[qtdJogadores];
-		
-		int i=0;
-		int comparacoes=0;
 		
 		do {
 			entrada = in.readLine();
@@ -25,41 +42,50 @@ public class App {
 			if(!(entrada.equals("FIM"))) {
 				
 				vetor[i] = new Jogador();
-				vetor[i] = players[Integer.parseInt(entrada)].clone();
+				vetor[i] = players[Integer.parseInt(entrada)].clone(); // Clona os dados do jogador com ID informado
 				i++;
+				
 			}
 			comparacoes++; // + Uma comparacao
 		} while ( !(entrada.equals("FIM")) );
 		
-		int qtdJogadoresVetor=i;
+		qtdJogadoresVetor=i; // Agora ja se sabe quantos jogadores existem nesse vetor
 		
 		do {
 			entrada = in.readLine();
-			boolean res = false;
+			boolean res = false; // Quando for verdadeiro vai mostrar SIM, existe esse jogador no vetor preenchido
 			
 			if(!(entrada.equals("FIM"))) {
 				
-				for(i=0; i<qtdJogadoresVetor && !res; i++) { // + Uma comparacao
+				// Para diminuir custo, caso encontre o jogador pode finalizar o for
+				for(i=0; i<qtdJogadoresVetor && !res; i++) { // + Uma comparacao de
 					
+					// Verificacao para saber se o nome informado existe na tabela com ou sem asterisco
 					String nome = vetor[i].getNome();
 		            char ultima = nome.charAt(nome.length()-1);
 		            String nomeSemAsterisco = new String("");
-		            
+		            // Detecta se na ultima posicao do nome do jogador atual existe um asterisco, aumenta um número bem baixo de comparacoes
+		            comparacoes++;
 		            if(ultima=='*') { // + Uma comparacao
-		            	for(int z=0; z<nome.length()-1; z++) {
-		            		nomeSemAsterisco += nome.charAt(z);
+		            	for(z=0; z<nome.length()-1; z++) { // + Uma comparacao
+		            		nomeSemAsterisco += nome.charAt(z); // Se existir vai reescrever o nome sem asterisco
 		            	}
+		            	comparacoes+=z;
 		            }
 					
+		            // Se exister o nome com asterisco imprime SIM
 					if(entrada.equals(nome)) { // + Uma comparacao
 						res=true;
 					}
+					comparacoes++;
+					// Se existir o nome sem asterisco imprime SIM
 					if(entrada.equals(nomeSemAsterisco)){ // + Uma comparacao
 						res=true;
 					}
+					comparacoes++;
 				}
+				comparacoes+=i;
 				
-				comparacoes+=i*4; // Somatorio das comparacoes acima
 				
 				if(res)
 					System.out.println("SIM");
@@ -70,17 +96,10 @@ public class App {
 			comparacoes++; // + Uma comparacao
 		} while ( !(entrada.equals("FIM")) );
 		
+		
 		long fim = System.currentTimeMillis();
-		long mili = fim-inicio;
+		gerarLog(inicio, fim, comparacoes);
 		
-		ArquivoTextoEscrita escrita = new ArquivoTextoEscrita();
-		String log = new String("705903,692669,689603\t" + mili + "\t" + comparacoes);
-		
-	    File arquivo = new File("matricula_sequencial.txt");
-	    
-	    escrita.abrirArquivo("matricula_sequencial.txt");
-	    escrita.escrever(log);
-	    escrita.fecharArquivo();
 	}
 	
 	public static int qtdLinhas (ArquivoTextoLeitura leitura) {
@@ -97,14 +116,25 @@ public class App {
 		
 		leitura.fecharArquivo();
 		
-		return qtd;
+		return qtd; // Retorna a quantidade de jogadores/Quantidade de linhas
+	}
+	
+	public static void gerarLog (long inicio, long fim, int comparacoes) {
+		long mili = fim-inicio;
+		
+		ArquivoTextoEscrita escrita = new ArquivoTextoEscrita();
+		String log = new String("705903,692669,689603\t" + mili + "\t" + comparacoes);
+	    
+	    escrita.abrirArquivo("matricula_sequencial.txt");
+	    escrita.escrever(log); // Escreve no arquivo criado o log.
+	    escrita.fecharArquivo();
 	}
 	
 	public static Jogador[] preencherVetorJogador (ArquivoTextoLeitura leitura, int qtdLinhas) {
-		Jogador[] players = new Jogador[qtdLinhas];
+		Jogador[] players = new Jogador[qtdLinhas]; // Reserva o armazenamento
 
 		for(int i=0; i<qtdLinhas; i++)
-			players[i] = new Jogador();
+			players[i] = new Jogador(); // Cria o objeto para cada um
 		
 		leitura.abrirArquivo("/tmp/players.csv");
 		
@@ -113,6 +143,18 @@ public class App {
             
             String[] dadosDaLinha = leitura.ler().split(",", 8); // Dividir os dados da linha
             
+            // Caso necessite de remover os asterisco só tirar o comenário das linhas abaixo
+            /*String nome = dadosDaLinha[1].toString();
+            char ultima = nome.charAt(nome.length()-1);
+            
+            if(ultima=='*') {
+            	dadosDaLinha[1]="";
+            	for(int z=0; z<nome.length()-1; z++) {
+            		dadosDaLinha[1] += nome.charAt(z);
+            	}
+            }*/
+            
+            // Seta os dados de cada linha para cada atributo do player atual
             players[i].setId(Integer.parseInt((dadosDaLinha[0].toString()))); // Transforma array em string, para transformar em int
             players[i].setNome(dadosDaLinha[1].toString());
             players[i].setAltura(Integer.parseInt((dadosDaLinha[2].toString())));

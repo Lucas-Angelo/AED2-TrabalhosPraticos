@@ -1,24 +1,29 @@
 import java.io.*;
 
 public class App {
+	
+	/*
+	 * Considerações:
+	 * 1- Deixamos comentado um código para caso for necessário remover o asterisco do nome do jogador.
+	 */
 
 	public static void main(String[] args) throws IOException {
 		
 		BufferedReader in = new BufferedReader(new InputStreamReader(System.in));
-		String idInformado = new String();
-		
 		ArquivoTextoLeitura leitura = new ArquivoTextoLeitura();
 		
-		int qtdJogadores = qtdLinhas(leitura);
+		String idInformado = new String();
 		
-		Jogador[] players = preencherVetorJogador(leitura, qtdJogadores);
+		int qtdJogadores = qtdLinhas(leitura); // Procurar quantas linhas/jogadores existem para deixar mais limpo o codigo
+		
+		Jogador[] players = preencherVetorJogador(leitura, qtdJogadores); // Primeiro preencher o vetor com os dados da tabela
 		
 		do {
-			idInformado = in.readLine();
+			idInformado = in.readLine(); // Qual jogador deseja procurar
 			
 			if(!(idInformado.equals("FIM"))) {
 				
-				players[Integer.parseInt(idInformado)].imprimir();;
+				players[Integer.parseInt(idInformado)].imprimir();; // Imprime os dados do Id procurado
 				
 			}
 			
@@ -40,14 +45,14 @@ public class App {
 		
 		leitura.fecharArquivo();
 		
-		return qtd;
+		return qtd; // Retorna a quantidade de jogadores/Quantidade de linhas
 	}
 	
 	public static Jogador[] preencherVetorJogador (ArquivoTextoLeitura leitura, int qtdLinhas) {
-		Jogador[] players = new Jogador[qtdLinhas];
+		Jogador[] players = new Jogador[qtdLinhas]; // Reserva o armazenamento
 
 		for(int i=0; i<qtdLinhas; i++)
-			players[i] = new Jogador();
+			players[i] = new Jogador(); // Cria o objeto para cada um
 		
 		leitura.abrirArquivo("/tmp/players.csv");
 		
@@ -55,7 +60,19 @@ public class App {
         for(int i=0; i<qtdLinhas; i++) {
             
             String[] dadosDaLinha = leitura.ler().split(",", 8); // Dividir os dados da linha
-                
+            
+            // Caso necessite de remover os asterisco só tirar o comenário das linhas abaixo
+            /*String nome = dadosDaLinha[1].toString();
+            char ultima = nome.charAt(nome.length()-1);
+            
+            if(ultima=='*') {
+            	dadosDaLinha[1]="";
+            	for(int z=0; z<nome.length()-1; z++) {
+            		dadosDaLinha[1] += nome.charAt(z);
+            	}
+            }*/
+            
+            // Seta os dados de cada linha para cada atributo do player atual
             players[i].setId(Integer.parseInt((dadosDaLinha[0].toString()))); // Transforma array em string, para transformar em int
             players[i].setNome(dadosDaLinha[1].toString());
             players[i].setAltura(Integer.parseInt((dadosDaLinha[2].toString())));

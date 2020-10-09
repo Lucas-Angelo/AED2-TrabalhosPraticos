@@ -1,25 +1,10 @@
 import java.io.*;
 
 public class App {
-	
-	/*
-	 * Considerações:
-	 * 1- Para o log, colocamos 3 matrículas dos integrantes do 
-	 * nosso grupo separadas por vírgulas, em seguidas os outros dados
-	 * 
-	 * 2- Não preenchemos nosso vetor que possuia todos os jogadores removendo o asterisco do nome,
-	 * criamos o código para fazer isso, mas deixamos comentado. Para verificar se o nome informado
-	 * existia e printar SIM/NAO nós verificamos o nome com e sem o asterisco. Com isso não alteramos
-	 * a tabela original, apenas o que era solicitado, diante disso, algumas comparações a mais foram
-	 * necessárias para chegar em 100%.
-	 * 
-	 * 3- Em relação ao número de comparações, foi contado apenas as comparações dentro da main, pois
-	 * nas as outras funcoes sao as genericas vindas da questão 1.
-	 * 
-	 */
 
 	public static void main(String[] args) throws IOException {
 		int comparacoes=0; // Para o log
+		int movimentacoes=0; // Para o log
 		
 		long inicio = System.currentTimeMillis(); // Para o log
 		
@@ -30,7 +15,6 @@ public class App {
 		
 		int qtdJogadores = qtdLinhas(leitura); // Cada linha é um jogador, procurar o número de linhas pra facilitar
 		int i=0; // Utilizado para selecionar posicoes do vetor com alguns jogadores, e no final saber quantos jogadores tem no vetor
-		int z=0;
 		int qtdJogadoresVetor;
 		
 		Jogador[] players = preencherVetorJogador(leitura, qtdJogadores);
@@ -51,55 +35,32 @@ public class App {
 		
 		qtdJogadoresVetor=i; // Agora ja se sabe quantos jogadores existem nesse vetor
 		
-		do {
-			entrada = in.readLine();
-			boolean res = false; // Quando for verdadeiro vai mostrar SIM, existe esse jogador no vetor preenchido
-			
-			if(!(entrada.equals("FIM"))) {
-				
-				// Para diminuir custo, caso encontre o jogador pode finalizar o for
-				for(i=0; i<qtdJogadoresVetor && !res; i++) { // + Uma comparacao de
-					
-					// Verificacao para saber se o nome informado existe na tabela com ou sem asterisco
-					String nome = vetor[i].getNome();
-		            char ultima = nome.charAt(nome.length()-1);
-		            String nomeSemAsterisco = new String("");
-		            // Detecta se na ultima posicao do nome do jogador atual existe um asterisco, aumenta um número bem baixo de comparacoes
-		            comparacoes++;
-		            if(ultima=='*') { // + Uma comparacao
-		            	for(z=0; z<nome.length()-1; z++) { // + Uma comparacao
-		            		nomeSemAsterisco += nome.charAt(z); // Se existir vai reescrever o nome sem asterisco
-		            	}
-		            	comparacoes+=z;
-		            }
-					
-		            // Se exister o nome com asterisco imprime SIM
-					if(entrada.equals(nome)) { // + Uma comparacao
-						res=true;
-					}
-					comparacoes++;
-					// Se existir o nome sem asterisco imprime SIM
-					if(entrada.equals(nomeSemAsterisco)){ // + Uma comparacao
-						res=true;
-					}
-					comparacoes++;
-				}
-				comparacoes+=i;
-				
-				
-				if(res)
-					System.out.println("SIM");
-				else
-					System.out.println("NAO");
-				
-			}
-			comparacoes++; // + Uma comparacao
-		} while ( !(entrada.equals("FIM")) );
+		Selection ordenar = new Selection(); // Objeto da classe que possui o metodo de ordenar
 		
+		vetor = ordenar.sort(vetor, qtdJogadoresVetor); // Vetor recebe de jogadores recebe ele mesmo ordenado por nome
+		
+		for(i=0; i<qtdJogadoresVetor; i++) {
+			vetor[i].imprimir(); // Imprime os dados do vetor ordenado por nome
+			comparacoes++;
+		}
+		
+		comparacoes += ordenar.getComparacoes();
+		movimentacoes += ordenar.getTrocas();
 		
 		long fim = System.currentTimeMillis();
-		gerarLog(inicio, fim, comparacoes);
+		gerarLog(inicio, fim, comparacoes, movimentacoes);
 		
+	}
+	
+	public static void gerarLog (long inicio, long fim, int comparacoes, int movimentacoes) {
+		long mili = fim-inicio;
+		
+		ArquivoTextoEscrita escrita = new ArquivoTextoEscrita();
+		String log = new String("705903,692669,689603\t" + mili + "\t" + comparacoes + "\t" + movimentacoes);
+	    
+	    escrita.abrirArquivo("matricula_selecao.txt");
+	    escrita.escrever(log); // Escreve no arquivo criado o log.
+	    escrita.fecharArquivo();
 	}
 	
 	public static int qtdLinhas (ArquivoTextoLeitura leitura) {
@@ -117,17 +78,6 @@ public class App {
 		leitura.fecharArquivo();
 		
 		return qtd; // Retorna a quantidade de jogadores/Quantidade de linhas
-	}
-	
-	public static void gerarLog (long inicio, long fim, int comparacoes) {
-		long mili = fim-inicio;
-		
-		ArquivoTextoEscrita escrita = new ArquivoTextoEscrita();
-		String log = new String("705903,692669,689603\t" + mili + "\t" + comparacoes);
-	    
-	    escrita.abrirArquivo("matricula_sequencial.txt");
-	    escrita.escrever(log); // Escreve no arquivo criado o log.
-	    escrita.fecharArquivo();
 	}
 	
 	public static Jogador[] preencherVetorJogador (ArquivoTextoLeitura leitura, int qtdLinhas) {
@@ -169,6 +119,55 @@ public class App {
 		leitura.fecharArquivo();
 		
 		return players;
+	}
+
+}
+
+class Selection {
+
+	/**
+	 * @param args
+	 */
+	
+	private int comparacoes;
+	private int trocas;
+	
+	public Jogador[] sort(Jogador[] vetor, int n) { // Metodo para chmar ordenacao privada
+		return method(vetor, n);
+	}
+	
+	private Jogador[] method(Jogador[] vetor, int n) { // Metodo que retorna o vetor jogadores ordenado por nome
+		this.comparacoes=0;
+		this.trocas=0;
+		
+		for (int i = 0; i < (n - 1); i++) {
+			int menor = i;
+			for (int j = (i + 1); j < n; j++) {
+				comparacoes++;
+				// Se o nome do jogador na posicao menor der maior que zero na comparacao com o nome do jogador na posicao atual, troca o menor
+				if ((vetor[menor].getNome()).compareTo(vetor[j].getNome()) > 0 ) {
+					menor = j;
+				}
+				comparacoes++;
+			}
+			comparacoes++;
+			if(menor!=i) { // Para economizar trocar, se o menor for diferente de ID faz as trocas
+				Jogador temp = vetor[i]; // Cria um objeto Jogador temporario auxiliar para receber o vetor na posicao i
+				vetor[i] = vetor[menor]; // O vetor na posicao i agora recebe o menor, para trocar
+				vetor[menor] = temp; // O menor recebe o antigo vetor na posicao i (temp)
+				trocas+=2;
+			}
+			comparacoes++;
+		}
+		return vetor;
+	}
+	
+	public int getComparacoes() {
+		return this.comparacoes;
+	}
+	
+	public int getTrocas() {
+		return this.trocas;
 	}
 
 }

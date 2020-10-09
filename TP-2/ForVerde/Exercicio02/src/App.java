@@ -59,7 +59,7 @@ public class App {
 					}
 				}
 				
-				comparacoes+=i*4;
+				comparacoes+=i*4; // Somatorio das comparacoes acima
 				
 				if(res)
 					System.out.println("SIM");
@@ -86,7 +86,7 @@ public class App {
 	public static int qtdLinhas (ArquivoTextoLeitura leitura) {
 		int qtd=0;
 		String linhaLida = new String();
-		leitura.abrirArquivo("players.csv");
+		leitura.abrirArquivo("/tmp/players.csv");
 		
 		leitura.ler(); // O cabecalho, tem que pular a primeira linha
 		linhaLida = leitura.ler();
@@ -106,22 +106,12 @@ public class App {
 		for(int i=0; i<qtdLinhas; i++)
 			players[i] = new Jogador();
 		
-		leitura.abrirArquivo("players.csv");
+		leitura.abrirArquivo("/tmp/players.csv");
 		
 		leitura.ler(); // Remove o cabecalho
         for(int i=0; i<qtdLinhas; i++) {
             
             String[] dadosDaLinha = leitura.ler().split(",", 8); // Dividir os dados da linha
-            
-            /*String nome = dadosDaLinha[1].toString();
-            char ultima = nome.charAt(nome.length()-1);
-            
-            if(ultima=='*') {
-            	dadosDaLinha[1]="";
-            	for(int z=0; z<nome.length()-1; z++) {
-            		dadosDaLinha[1] += nome.charAt(z);
-            	}
-            }*/
             
             players[i].setId(Integer.parseInt((dadosDaLinha[0].toString()))); // Transforma array em string, para transformar em int
             players[i].setNome(dadosDaLinha[1].toString());

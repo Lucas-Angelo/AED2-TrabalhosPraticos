@@ -57,6 +57,16 @@ public class App {
         for(int i=0; i<qtdLinhas; i++) {
             
             String[] dadosDaLinha = leitura.ler().split(",", 8); // Dividir os dados da linha
+            
+            /*String nome = dadosDaLinha[1].toString();
+            char ultima = nome.charAt(nome.length()-1);
+            
+            if(ultima=='*') {
+            	dadosDaLinha[1]="";
+            	for(int z=0; z<nome.length()-1; z++) {
+            		dadosDaLinha[1] += nome.charAt(z);
+            	}
+            }*/
                 
             players[i].setId(Integer.parseInt((dadosDaLinha[0].toString()))); // Transforma array em string, para transformar em int
             players[i].setNome(dadosDaLinha[1].toString());

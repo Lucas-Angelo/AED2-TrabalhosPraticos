@@ -139,11 +139,11 @@ class Heap {
 	private int comparacoes;
 	private int trocas;
 
-	public static Jogador[] sort(Jogador[] array, int n) {
+	public Jogador[] sort(Jogador[] array, int n) {
 		return method(array, n);
 	}
 
-	private static Jogador[] method(Jogador[] array, int n) {
+	private Jogador[] method(Jogador[] array, int n) {
 
 		// Criando outro vetor, com todos os elementos do vetor anterior reposicionados
 		// (uma posição a frente)
@@ -151,12 +151,14 @@ class Heap {
 		Jogador[] tmp = new Jogador[n + 1];
 		for (int i = 0; i < n; i++) {
 			tmp[i + 1] = array[i];
+			this.comparacoes++;
 		}
 		array = tmp;
 
 		// Contrução do heap
 		for (int tamHeap = 2; tamHeap <= n; tamHeap++) {
 			constroi(array, tamHeap);
+			this.comparacoes++;
 		}
 
 		// Ordenação propriamente dita
@@ -164,6 +166,7 @@ class Heap {
 		while (tamHeap > 1) {
 			troca(array, 1, tamHeap--);
 			reconstroi(array, tamHeap);
+			this.comparacoes++;
 		}
 
 		// Alterar o vetor para voltar à posição zero
@@ -171,21 +174,23 @@ class Heap {
 		array = new Jogador[n];
 		for (int i = 0; i < n; i++) {
 			array[i] = tmp[i + 1];
+			this.comparacoes++;
 		}
 
 		return array;
 	}
 
-	private static void constroi(Jogador[] array, int tamHeap) {
+	private void constroi(Jogador[] array, int tamHeap) {
 
 		for (int i = tamHeap; i > 1 && (array[i].getAltura() > array[i / 2].getAltura()
 				|| (array[i].getNome().compareTo(array[i / 2].getNome()) > 0
 						&& array[i].getAltura() == array[i / 2].getAltura())); i /= 2) {
 			troca(array, i, i / 2);
+			this.comparacoes += 4;
 		}
 	}
 
-	private static void reconstroi(Jogador[] array, int tamHeap) {
+	private void reconstroi(Jogador[] array, int tamHeap) {
 
 		int i = 1;
 
@@ -199,10 +204,11 @@ class Heap {
 			} else {
 				i = tamHeap;
 			}
+			this.comparacoes += 4;
 		}
 	}
 
-	private static int getMaiorFilho(Jogador[] array, int i, int tamHeap) {
+	private int getMaiorFilho(Jogador[] array, int i, int tamHeap) {
 
 		int filho;
 
@@ -213,15 +219,17 @@ class Heap {
 		} else {
 			filho = 2 * i + 1;
 		}
+		this.comparacoes += 4;
 		return filho;
 	}
 
-	private static void troca(Jogador[] array, int i, int j) {
+	private void troca(Jogador[] array, int i, int j) {
 		Jogador aux;
 
 		aux = array[i];
 		array[i] = array[j];
 		array[j] = aux;
+		this.trocas += 2;
 	}
 
 	public int getComparacoes() {

@@ -9,9 +9,25 @@ import java.io.InputStreamReader;
 
 public class App {
 
+	/*
+	 * Considerações: 1- Para o log, colocamos 3 matrículas dos integrantes do nosso
+	 * grupo separadas por vírgulas, em seguidas os outros dados
+	 * 
+	 * 2- Não preenchemos nosso vetor que possuia todos os jogadores removendo o
+	 * asterisco do nome, criamos o código para fazer isso, mas deixamos comentado.
+	 * Para verificar se o nome informado existia e printar SIM/NAO nós verificamos
+	 * o nome com e sem o asterisco. Com isso não alteramos a tabela original,
+	 * apenas o que era solicitado, diante disso, algumas comparações a mais foram
+	 * necessárias para chegar em 100%.
+	 * 
+	 * 3- Em relação ao número de comparações, foi contado apenas as comparações
+	 * dentro da main, pois nas as outras funcoes sao as genericas vindas da questão
+	 * 1.
+	 * 
+	 */
+
 	public static void main(String[] args) throws IOException {
 		int comparacoes = 0; // Para o log
-		int movimentacoes = 0; // Para o log
 
 		long inicio = System.currentTimeMillis(); // Para o log
 
@@ -23,6 +39,7 @@ public class App {
 		int qtdJogadores = qtdLinhas(leitura); // Cada linha é um jogador, procurar o número de linhas pra facilitar
 		int i = 0; // Utilizado para selecionar posicoes do vetor com alguns jogadores, e no final
 					// saber quantos jogadores tem no vetor
+		int z = 0;
 		int qtdJogadoresVetor;
 
 		Jogador[] players = preencherVetorJogador(leitura, qtdJogadores);
@@ -42,29 +59,67 @@ public class App {
 
 		qtdJogadoresVetor = i; // Agora ja se sabe quantos jogadores existem nesse vetor
 
-		Shell ordenar = new Shell(); // Objeto da classe que possui o metodo de ordenar
+		do {
+			entrada = in.readLine();
+			boolean res = false; // Quando for verdadeiro vai mostrar SIM, existe esse jogador no vetor
+									// preenchido
 
-		vetor = ordenar.sort(vetor, qtdJogadoresVetor); // Vetor recebe de jogadores recebe ele mesmo ordenado por nome
+			if (!(entrada.equals("FIM"))) {
 
-		for (i = 0; i < qtdJogadoresVetor; i++) {
-			vetor[i].imprimir(); // Imprime os dados do vetor ordenado por nome
-		}
+				char ultimaLetra = entrada.charAt(entrada.length() - 1);
+				String entradaSemAsterisco = new String("");
+				if (ultimaLetra == '*') { // + Uma comparacao
+					for (z = 0; z < entrada.length() - 1; z++) {
+						entradaSemAsterisco += entrada.charAt(z); // Se existir vai reescrever o nome sem asterisco
+					}
+				} else {
+					entradaSemAsterisco = entrada;
+				}
 
-		comparacoes += ordenar.getComparacoes();
-		movimentacoes += ordenar.getTrocas();
+				// Para diminuir custo, caso encontre o jogador pode finalizar o for
+				for (i = 0; i < qtdJogadoresVetor && !res; i++) { // + Uma comparacao de
+
+					// Verificacao para saber se o nome informado existe na tabela com ou sem
+					// asterisco
+					String nome = vetor[i].getNome();
+					char ultima = nome.charAt(nome.length() - 1);
+					String nomeSemAsterisco = new String("");
+					// Detecta se na ultima posicao do nome do jogador atual existe um asterisco
+					if (ultima == '*') { // + Uma comparacao
+						for (z = 0; z < nome.length() - 1; z++) {
+							nomeSemAsterisco += nome.charAt(z); // Se existir vai reescrever o nome sem asterisco
+						}
+					} else {
+						nomeSemAsterisco = vetor[i].getNome();
+					}
+
+					// Se exister o nome imprime SIM
+					if (entradaSemAsterisco.equals(nomeSemAsterisco)) {
+						res = true;
+					}
+					comparacoes++;
+				}
+
+				if (res)
+					System.out.println("SIM");
+				else
+					System.out.println("NAO");
+
+			}
+		} while (!(entrada.equals("FIM")));
 
 		long fim = System.currentTimeMillis();
-		gerarLog(inicio, fim, comparacoes, movimentacoes);
+		gerarLog(inicio, fim, comparacoes);
 
 	}
-
-	public static void gerarLog(long inicio, long fim, int comparacoes, int movimentacoes) {
+	
+	public static void gerarLog(long inicio, long fim, int comparacoes) {
 		long mili = fim - inicio;
 
 		ArquivoTextoEscrita escrita = new ArquivoTextoEscrita();
-		String log = new String("705903,692669,689603\t" + mili + "\t" + comparacoes + "\t" + movimentacoes);
+		String log = new String("705903,692669,689603\t" + mili + "\t" + comparacoes);
 
-		escrita.abrirArquivo("matricula_shellsort.txt");
+		escrita.abrirArquivo("matricula_sequencial.txt");
 		escrita.escrever(log); // Escreve no arquivo criado o log.
 		escrita.fecharArquivo();
 	}
@@ -72,7 +127,7 @@ public class App {
 	public static int qtdLinhas(ArquivoTextoLeitura leitura) {
 		int qtd = 0;
 		String linhaLida = new String();
-		leitura.abrirArquivo("players.csv");
+		leitura.abrirArquivo("/tmp/players.csv");
 
 		leitura.ler(); // O cabecalho, tem que pular a primeira linha
 		linhaLida = leitura.ler();
@@ -92,7 +147,7 @@ public class App {
 		for (int i = 0; i < qtdLinhas; i++)
 			players[i] = new Jogador(); // Cria o objeto para cada um
 
-		leitura.abrirArquivo("players.csv");
+		leitura.abrirArquivo("/tmp/players.csv");
 
 		leitura.ler(); // Remove o cabecalho
 		for (int i = 0; i < qtdLinhas; i++) {
@@ -124,66 +179,6 @@ public class App {
 		leitura.fecharArquivo();
 
 		return players;
-	}
-
-}
-
-class Shell {
-
-	/**
-	 * @param args
-	 */
-
-	private int comparacoes;
-	private int trocas;
-
-	public Jogador[] sort(Jogador[] array, int n) {
-		return method(array, n);
-	}
-
-	private Jogador[] method(Jogador[] array, int n) {
-		this.comparacoes = 0;
-		this.trocas = 0;
-		int h = 1;
-
-		do {
-			h = (h * 3) + 1;
-		} while (h < n);
-
-		do {
-			h /= 3;
-			for (int inicio = 0; inicio < h; inicio++) {
-				insercao(array, n, inicio, h);
-			}
-		} while (h != 1);
-
-		return array;
-	}
-
-	private void insercao(Jogador[] array, int n, int inicio, int h) {
-
-		Jogador tmp = new Jogador();
-
-		for (int i = (h + inicio); i < n; i += h) {
-			tmp = array[i].clone();
-			int j = i - h;
-			while (((j >= 0) && ((array[j].getPeso() > tmp.getPeso())
-					|| (array[j].getNome().compareTo(tmp.getNome()) > 0 && array[j].getPeso() == tmp.getPeso())))) {
-				array[j + h] = array[j];
-				j -= h;
-				this.comparacoes += 2;
-			}
-			array[j + h] = tmp;
-			this.trocas++;
-		}
-	}
-
-	public int getComparacoes() {
-		return this.comparacoes;
-	}
-
-	public int getTrocas() {
-		return this.trocas;
 	}
 
 }

@@ -38,7 +38,6 @@ public class App {
 				i++;
 
 			}
-			comparacoes++; // + Uma comparacao
 		} while (!(entrada.equals("FIM")));
 
 		qtdJogadoresVetor = i; // Agora ja se sabe quantos jogadores existem nesse vetor
@@ -49,7 +48,6 @@ public class App {
 
 		for (i = 0; i < qtdJogadoresVetor; i++) {
 			vetor[i].imprimir(); // Imprime os dados do vetor ordenado por nome
-			comparacoes++;
 		}
 
 		comparacoes += ordenar.getComparacoes();
@@ -144,6 +142,8 @@ class Heap {
 	}
 
 	private Jogador[] method(Jogador[] array, int n) {
+		this.comparacoes = 0;
+		this.trocas = 0;
 
 		// Criando outro vetor, com todos os elementos do vetor anterior reposicionados
 		// (uma posição a frente)
@@ -151,14 +151,12 @@ class Heap {
 		Jogador[] tmp = new Jogador[n + 1];
 		for (int i = 0; i < n; i++) {
 			tmp[i + 1] = array[i];
-			this.comparacoes++;
 		}
 		array = tmp;
 
 		// Contrução do heap
 		for (int tamHeap = 2; tamHeap <= n; tamHeap++) {
 			constroi(array, tamHeap);
-			this.comparacoes++;
 		}
 
 		// Ordenação propriamente dita
@@ -166,7 +164,6 @@ class Heap {
 		while (tamHeap > 1) {
 			troca(array, 1, tamHeap--);
 			reconstroi(array, tamHeap);
-			this.comparacoes++;
 		}
 
 		// Alterar o vetor para voltar à posição zero
@@ -174,7 +171,6 @@ class Heap {
 		array = new Jogador[n];
 		for (int i = 0; i < n; i++) {
 			array[i] = tmp[i + 1];
-			this.comparacoes++;
 		}
 
 		return array;
@@ -186,7 +182,6 @@ class Heap {
 				|| (array[i].getNome().compareTo(array[i / 2].getNome()) > 0
 						&& array[i].getAltura() == array[i / 2].getAltura())); i /= 2) {
 			troca(array, i, i / 2);
-			this.comparacoes += 4;
 		}
 	}
 
@@ -204,7 +199,7 @@ class Heap {
 			} else {
 				i = tamHeap;
 			}
-			this.comparacoes += 4;
+			this.comparacoes += 2;
 		}
 	}
 
@@ -219,7 +214,7 @@ class Heap {
 		} else {
 			filho = 2 * i + 1;
 		}
-		this.comparacoes += 4;
+		this.comparacoes += 2;
 		return filho;
 	}
 

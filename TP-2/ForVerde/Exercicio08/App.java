@@ -20,7 +20,7 @@ public class App {
 
 		ArquivoTextoLeitura leitura = new ArquivoTextoLeitura();
 
-		int qtdJogadores = qtdLinhas(leitura); // Cada linha é um jogador, procurar o número de linhas pra facilitar
+		int qtdJogadores = qtdLinhas(leitura); // Cada linha � um jogador, procurar o n�mero de linhas pra facilitar
 		int i = 0; // Utilizado para selecionar posicoes do vetor com alguns jogadores, e no final
 					// saber quantos jogadores tem no vetor
 		int qtdJogadoresVetor;
@@ -38,7 +38,6 @@ public class App {
 				i++;
 
 			}
-			comparacoes++; // + Uma comparacao
 		} while (!(entrada.equals("FIM")));
 
 		qtdJogadoresVetor = i; // Agora ja se sabe quantos jogadores existem nesse vetor
@@ -49,7 +48,6 @@ public class App {
 
 		for (i = 0; i < qtdJogadoresVetor; i++) {
 			vetor[i].imprimir(); // Imprime os dados do vetor ordenado por nome
-			comparacoes++;
 		}
 
 		comparacoes += ordenar.getComparacoes();
@@ -66,7 +64,7 @@ public class App {
 		ArquivoTextoEscrita escrita = new ArquivoTextoEscrita();
 		String log = new String("705903,692669,689603\t" + mili + "\t" + comparacoes + "\t" + movimentacoes);
 
-		escrita.abrirArquivo("matricula_selecao.txt");
+		escrita.abrirArquivo("matricula_shellsort.txt");
 		escrita.escrever(log); // Escreve no arquivo criado o log.
 		escrita.fecharArquivo();
 	}
@@ -101,7 +99,7 @@ public class App {
 
 			String[] dadosDaLinha = leitura.ler().split(",", 8); // Dividir os dados da linha
 
-			// Caso necessite de remover os asterisco só tirar o comenário das linhas abaixo
+			// Caso necessite de remover os asterisco s� tirar o comen�rio das linhas abaixo
 			/*
 			 * String nome = dadosDaLinha[1].toString(); char ultima =
 			 * nome.charAt(nome.length()-1);
@@ -139,11 +137,13 @@ class Shell {
 	private int comparacoes;
 	private int trocas;
 
-	public static Jogador[] sort(Jogador[] array, int n) {
+	public Jogador[] sort(Jogador[] array, int n) {
 		return method(array, n);
 	}
 
-	private static Jogador[] method(Jogador[] array, int n) {
+	private Jogador[] method(Jogador[] array, int n) {
+		this.comparacoes = 0;
+		this.trocas = 0;
 		int h = 1;
 
 		do {
@@ -160,7 +160,7 @@ class Shell {
 		return array;
 	}
 
-	private static void insercao(Jogador[] array, int n, int inicio, int h) {
+	private void insercao(Jogador[] array, int n, int inicio, int h) {
 
 		Jogador tmp = new Jogador();
 
@@ -171,8 +171,10 @@ class Shell {
 					|| (array[j].getNome().compareTo(tmp.getNome()) > 0 && array[j].getPeso() == tmp.getPeso())))) {
 				array[j + h] = array[j];
 				j -= h;
+				this.comparacoes += 2;
 			}
 			array[j + h] = tmp;
+			this.trocas++;
 		}
 	}
 
@@ -213,7 +215,7 @@ class Jogador {
 		this.estadoNascimento = estadoNascimento;
 	}
 
-	// Início GETS
+	// In�cio GETS
 	public int getId() {
 		return this.id;
 	}
@@ -247,7 +249,7 @@ class Jogador {
 	}
 	// Fim GETS
 
-	// Início SETS
+	// In�cio SETS
 	public void setId(int id) {
 		this.id = id;
 	}
@@ -339,7 +341,7 @@ class ArquivoTextoLeitura {
 		try {
 			entrada = new BufferedReader(new FileReader(nomeArquivo));
 		} catch (FileNotFoundException excecao) {
-			System.out.println("Arquivo nÃ£o encontrado");
+			System.out.println("Arquivo não encontrado");
 		}
 	}
 
@@ -358,7 +360,7 @@ class ArquivoTextoLeitura {
 
 		try {
 			textoEntrada = entrada.readLine();
-		} catch (EOFException excecao) { // ExceÃ§Ã£o de final de arquivo.
+		} catch (EOFException excecao) { // Exceção de final de arquivo.
 			return null;
 		} catch (IOException excecao) {
 			System.out.println("Erro de leitura: " + excecao);

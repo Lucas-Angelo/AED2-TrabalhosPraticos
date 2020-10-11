@@ -42,7 +42,7 @@ public class App {
 		
 		qtdJogadoresVetor=i; // Agora ja se sabe quantos jogadores existem nesse vetor
 		
-		Selection ordenar = new Selection();// Objeto da classe que possui o metodo de ordenar
+		Insertion ordenar = new Insertion();// Objeto da classe que possui o metodo de ordenar
 		
 		vetor = ordenar.sort(vetor, qtdJogadoresVetor); // Vetor recebe de jogadores recebe ele mesmo ordenado por nome
 		
@@ -130,55 +130,33 @@ public class App {
 
 }
 
-public class Insertion {
-
+class Insertion {
+	
+	private int comparacoes;
+	private int trocas;
+	
 	/**
 	 * @param args
 	 */
-	public static int[] sort(int[] array, int n) {
-		return method(array, n);
-	}
-	
-	private static int[] method(int[] array, int n) {
-		for (int i = 1; i < n; i++) {
-			int tmp = array[i];
-	         	int j = i - 1;
-
-	         	while ((j >= 0) && (array[j] > tmp)) {
-	            		array[j + 1] = array[j];
-	            		j--;
-	         	}
-	         	array[j + 1] = tmp;
-	      	}
-		return array;
-	}
-
-	private Jogador[] method(Jogador[] vetor, int n) { // Metodo que retorna o vetor jogadores ordenado por nome
-		this.comparacoes=0;
-		this.trocas=0;
-		
-		for (int i = 0; i < (n - 1); i++) {
-			int menor = i;
-			for (int j = (i + 1); j < n; j++) {
-				comparacoes++;
-				// Se o nome do jogador na posicao menor der maior que zero na comparacao com o nome do jogador na posicao atual, troca o menor
-				if ((vetor[menor].getNome()).compareTo(vetor[j].getNome()) > 0 ) {
-					menor = j;
-				}
-				comparacoes++;
-			}
-			comparacoes++;
-			if(menor!=i) { // Para economizar trocar, se o menor for diferente de ID faz as trocas
-				Jogador temp = vetor[i]; // Cria um objeto Jogador temporario auxiliar para receber o vetor na posicao i
-				vetor[i] = vetor[menor]; // O vetor na posicao i agora recebe o menor, para trocar
-				vetor[menor] = temp; // O menor recebe o antigo vetor na posicao i (temp)
-				trocas+=2;
-			}
-			comparacoes++;
+		public Jogador[] sort(Jogador[] array, int n) {
+			return method(array, n);
 		}
-		return vetor;
-	}
-	
+		private Jogador[] method(Jogador[] array, int n) {
+			for (int i = 1; i < n; i++) {
+				Jogador tmp = new Jogador ();
+					tmp = array[i].clone();
+						int j = i - 1;
+
+		         	while (((j >= 0) && ((array[j].getAnoNascimento() > tmp.getAnoNascimento())
+							|| (array[j].getNome().compareTo(tmp.getNome()) > 0 && array[j].getAnoNascimento() == tmp.getAnoNascimento())))) {
+		            		array[j + 1] = array[j];
+		            			j--;
+		         	}
+		         	array[j + 1] = tmp;
+		      	}
+			return array;
+		}
+
 	public int getComparacoes() {
 		return this.comparacoes;
 	}

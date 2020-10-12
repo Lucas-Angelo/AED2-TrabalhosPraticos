@@ -64,7 +64,7 @@ public class App {
 		ArquivoTextoEscrita escrita = new ArquivoTextoEscrita();
 		String log = new String("705903,692669,689603\t" + mili + "\t" + comparacoes + "\t" + movimentacoes);
 
-		escrita.abrirArquivo("matricula_bolha.txt");
+		escrita.abrirArquivo("matricula_selecao.txt");
 		escrita.escrever(log); // Escreve no arquivo criado o log.
 		escrita.fecharArquivo();
 	}
@@ -129,27 +129,30 @@ public class App {
 }
 
 class Bubble {
-	private int comparacoes;
-	private int trocas;
+
 	/**
 	 * @param args
 	 */
+	
+	private int comparacoes;
+	private int trocas;
+	
+
 	public Jogador[] sort(Jogador[] array, int n) {
 		return method(array, n);
 	}
 	
 	private Jogador[] method(Jogador[] array, int n) {
+		
+		Jogador temp = new Jogador ();
+		
 		for (int i = (n - 1); i > 0; i--) {
-			Jogador tmp = new Jogador ();
-			tmp = array[i].clone();
-			int j = i - 1;
-			while (((j >= 0) && ((array[j].getCidadeNascimento().compareTo(tmp.getCidadeNascimento()))
-					|| (array[j].getNome().compareTo(tmp.getNome()) > 0 && array[j].getPeso() == tmp.getPeso())))) {
 			for (int j = 0; j < i; j++) {
-				if (array[j] > array[j + 1]) {	               			
-					int tmp = array[j];
+				if (array[j] > array[j + 1]) {
+	               			
+					int temp = array[j];
 	      				array[j] = array[j+1];
-	      				array[j+1] = tmp;
+	      				array[j+1] = temp;
 				}
 			}
 		}

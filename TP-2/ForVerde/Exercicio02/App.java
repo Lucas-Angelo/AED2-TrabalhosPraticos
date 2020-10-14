@@ -112,7 +112,7 @@ public class App {
 		gerarLog(inicio, fim, comparacoes);
 
 	}
-	
+
 	public static void gerarLog(long inicio, long fim, int comparacoes) {
 		long mili = fim - inicio;
 

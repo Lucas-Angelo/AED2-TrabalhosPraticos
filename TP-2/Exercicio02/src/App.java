@@ -113,6 +113,17 @@ public class App {
 
 	}
 
+	public static void gerarLog(long inicio, long fim, int comparacoes) {
+		long mili = fim - inicio;
+
+		ArquivoTextoEscrita escrita = new ArquivoTextoEscrita();
+		String log = new String("705903,692669,689603\t" + mili + "\t" + comparacoes);
+
+		escrita.abrirArquivo("matricula_sequencial.txt");
+		escrita.escrever(log); // Escreve no arquivo criado o log.
+		escrita.fecharArquivo();
+	}
+
 	public static int qtdLinhas(ArquivoTextoLeitura leitura) {
 		int qtd = 0;
 		String linhaLida = new String();
@@ -128,17 +139,6 @@ public class App {
 		leitura.fecharArquivo();
 
 		return qtd; // Retorna a quantidade de jogadores/Quantidade de linhas
-	}
-
-	public static void gerarLog(long inicio, long fim, int comparacoes) {
-		long mili = fim - inicio;
-
-		ArquivoTextoEscrita escrita = new ArquivoTextoEscrita();
-		String log = new String("705903,692669,689603\t" + mili + "\t" + comparacoes);
-
-		escrita.abrirArquivo("matricula_sequencial.txt");
-		escrita.escrever(log); // Escreve no arquivo criado o log.
-		escrita.fecharArquivo();
 	}
 
 	public static Jogador[] preencherVetorJogador(ArquivoTextoLeitura leitura, int qtdLinhas) {

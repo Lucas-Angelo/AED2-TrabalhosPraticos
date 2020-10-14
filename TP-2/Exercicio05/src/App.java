@@ -10,8 +10,8 @@ import java.io.InputStreamReader;
 public class App {
 
 	public static void main(String[] args) throws IOException {
-		int comparacoes = 0; // Para o log
-		int movimentacoes = 0; // Para o log
+		int comparacoes; // Para o log
+		int movimentacoes; // Para o log
 
 		long inicio = System.currentTimeMillis(); // Para o log
 
@@ -50,8 +50,8 @@ public class App {
 			vetor[i].imprimir(); // Imprime os dados do vetor ordenado por nome
 		}
 
-		comparacoes += ordenar.getComparacoes();
-		movimentacoes += ordenar.getTrocas();
+		comparacoes = ordenar.getComparacoes();
+		movimentacoes = ordenar.getMovimentacoes();
 
 		long fim = System.currentTimeMillis();
 		gerarLog(inicio, fim, comparacoes, movimentacoes);
@@ -134,16 +134,14 @@ class Heap {
 	 * @param args
 	 */
 
-	private int comparacoes;
-	private int trocas;
+	private int comparacoes = 0;
+	private int movimentacoes = 0;
 
 	public Jogador[] sort(Jogador[] array, int n) {
 		return method(array, n);
 	}
 
 	private Jogador[] method(Jogador[] array, int n) {
-		this.comparacoes = 0;
-		this.trocas = 0;
 
 		// Criando outro vetor, com todos os elementos do vetor anterior reposicionados
 		// (uma posição a frente)
@@ -182,6 +180,7 @@ class Heap {
 				|| (array[i].getNome().compareTo(array[i / 2].getNome()) > 0
 						&& array[i].getAltura() == array[i / 2].getAltura())); i /= 2) {
 			troca(array, i, i / 2);
+			this.comparacoes++;
 		}
 	}
 
@@ -199,7 +198,7 @@ class Heap {
 			} else {
 				i = tamHeap;
 			}
-			this.comparacoes += 2;
+			this.comparacoes++;
 		}
 	}
 
@@ -214,7 +213,7 @@ class Heap {
 		} else {
 			filho = 2 * i + 1;
 		}
-		this.comparacoes += 2;
+		this.comparacoes++;
 		return filho;
 	}
 
@@ -224,15 +223,15 @@ class Heap {
 		aux = array[i];
 		array[i] = array[j];
 		array[j] = aux;
-		this.trocas += 2;
+		this.movimentacoes++;
 	}
 
 	public int getComparacoes() {
 		return this.comparacoes;
 	}
 
-	public int getTrocas() {
-		return this.trocas;
+	public int getMovimentacoes() {
+		return this.movimentacoes;
 	}
 
 }

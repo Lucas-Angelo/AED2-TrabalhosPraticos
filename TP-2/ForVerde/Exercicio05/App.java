@@ -10,8 +10,8 @@ import java.io.InputStreamReader;
 public class App {
 
 	public static void main(String[] args) throws IOException {
-		int comparacoes = 0; // Para o log
-		int movimentacoes = 0; // Para o log
+		int comparacoes; // Para o log
+		int movimentacoes; // Para o log
 
 		long inicio = System.currentTimeMillis(); // Para o log
 
@@ -20,7 +20,7 @@ public class App {
 
 		ArquivoTextoLeitura leitura = new ArquivoTextoLeitura();
 
-		int qtdJogadores = qtdLinhas(leitura); // Cada linha Ã© um jogador, procurar o nÃºmero de linhas pra facilitar
+		int qtdJogadores = qtdLinhas(leitura); // Cada linha é um jogador, procurar o número de linhas pra facilitar
 		int i = 0; // Utilizado para selecionar posicoes do vetor com alguns jogadores, e no final
 					// saber quantos jogadores tem no vetor
 		int qtdJogadoresVetor;
@@ -38,7 +38,6 @@ public class App {
 				i++;
 
 			}
-			comparacoes++; // + Uma comparacao
 		} while (!(entrada.equals("FIM")));
 
 		qtdJogadoresVetor = i; // Agora ja se sabe quantos jogadores existem nesse vetor
@@ -49,11 +48,10 @@ public class App {
 
 		for (i = 0; i < qtdJogadoresVetor; i++) {
 			vetor[i].imprimir(); // Imprime os dados do vetor ordenado por nome
-			comparacoes++;
 		}
 
-		comparacoes += ordenar.getComparacoes();
-		movimentacoes += ordenar.getTrocas();
+		comparacoes = ordenar.getComparacoes();
+		movimentacoes = ordenar.getMovimentacoes();
 
 		long fim = System.currentTimeMillis();
 		gerarLog(inicio, fim, comparacoes, movimentacoes);
@@ -101,7 +99,7 @@ public class App {
 
 			String[] dadosDaLinha = leitura.ler().split(",", 8); // Dividir os dados da linha
 
-			// Caso necessite de remover os asterisco sÃ³ tirar o comenÃ¡rio das linhas abaixo
+			// Caso necessite de remover os asterisco só tirar o comenário das linhas abaixo
 			/*
 			 * String nome = dadosDaLinha[1].toString(); char ultima =
 			 * nome.charAt(nome.length()-1);
@@ -136,8 +134,8 @@ class Heap {
 	 * @param args
 	 */
 
-	private int comparacoes;
-	private int trocas;
+	private int comparacoes = 0;
+	private int movimentacoes = 0;
 
 	public Jogador[] sort(Jogador[] array, int n) {
 		return method(array, n);
@@ -146,35 +144,31 @@ class Heap {
 	private Jogador[] method(Jogador[] array, int n) {
 
 		// Criando outro vetor, com todos os elementos do vetor anterior reposicionados
-		// (uma posiÃ§Ã£o a frente)
-		// de forma a ignorar a posiÃ§Ã£o zero
+		// (uma posição a frente)
+		// de forma a ignorar a posição zero
 		Jogador[] tmp = new Jogador[n + 1];
 		for (int i = 0; i < n; i++) {
 			tmp[i + 1] = array[i];
-			this.comparacoes++;
 		}
 		array = tmp;
 
-		// ContruÃ§Ã£o do heap
+		// Contrução do heap
 		for (int tamHeap = 2; tamHeap <= n; tamHeap++) {
 			constroi(array, tamHeap);
-			this.comparacoes++;
 		}
 
-		// OrdenaÃ§Ã£o propriamente dita
+		// Ordenação propriamente dita
 		int tamHeap = n;
 		while (tamHeap > 1) {
 			troca(array, 1, tamHeap--);
 			reconstroi(array, tamHeap);
-			this.comparacoes++;
 		}
 
-		// Alterar o vetor para voltar Ã  posiÃ§Ã£o zero
+		// Alterar o vetor para voltar à posição zero
 		tmp = array;
 		array = new Jogador[n];
 		for (int i = 0; i < n; i++) {
 			array[i] = tmp[i + 1];
-			this.comparacoes++;
 		}
 
 		return array;
@@ -186,7 +180,7 @@ class Heap {
 				|| (array[i].getNome().compareTo(array[i / 2].getNome()) > 0
 						&& array[i].getAltura() == array[i / 2].getAltura())); i /= 2) {
 			troca(array, i, i / 2);
-			this.comparacoes += 4;
+			this.comparacoes++;
 		}
 	}
 
@@ -204,7 +198,7 @@ class Heap {
 			} else {
 				i = tamHeap;
 			}
-			this.comparacoes += 4;
+			this.comparacoes++;
 		}
 	}
 
@@ -219,7 +213,7 @@ class Heap {
 		} else {
 			filho = 2 * i + 1;
 		}
-		this.comparacoes += 4;
+		this.comparacoes++;
 		return filho;
 	}
 
@@ -229,15 +223,15 @@ class Heap {
 		aux = array[i];
 		array[i] = array[j];
 		array[j] = aux;
-		this.trocas += 2;
+		this.movimentacoes++;
 	}
 
 	public int getComparacoes() {
 		return this.comparacoes;
 	}
 
-	public int getTrocas() {
-		return this.trocas;
+	public int getMovimentacoes() {
+		return this.movimentacoes;
 	}
 
 }
@@ -269,7 +263,7 @@ class Jogador {
 		this.estadoNascimento = estadoNascimento;
 	}
 
-	// InÃ­cio GETS
+	// Início GETS
 	public int getId() {
 		return this.id;
 	}
@@ -303,7 +297,7 @@ class Jogador {
 	}
 	// Fim GETS
 
-	// InÃ­cio SETS
+	// Início SETS
 	public void setId(int id) {
 		this.id = id;
 	}
@@ -395,7 +389,7 @@ class ArquivoTextoLeitura {
 		try {
 			entrada = new BufferedReader(new FileReader(nomeArquivo));
 		} catch (FileNotFoundException excecao) {
-			System.out.println("Arquivo nÃƒÂ£o encontrado");
+			System.out.println("Arquivo nÃ£o encontrado");
 		}
 	}
 
@@ -414,7 +408,7 @@ class ArquivoTextoLeitura {
 
 		try {
 			textoEntrada = entrada.readLine();
-		} catch (EOFException excecao) { // ExceÃƒÂ§ÃƒÂ£o de final de arquivo.
+		} catch (EOFException excecao) { // ExceÃ§Ã£o de final de arquivo.
 			return null;
 		} catch (IOException excecao) {
 			System.out.println("Erro de leitura: " + excecao);

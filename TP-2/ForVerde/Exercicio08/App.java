@@ -10,8 +10,8 @@ import java.io.InputStreamReader;
 public class App {
 
 	public static void main(String[] args) throws IOException {
-		int comparacoes = 0; // Para o log
-		int movimentacoes = 0; // Para o log
+		int comparacoes; // Para o log
+		int movimentacoes; // Para o log
 
 		long inicio = System.currentTimeMillis(); // Para o log
 
@@ -50,8 +50,8 @@ public class App {
 			vetor[i].imprimir(); // Imprime os dados do vetor ordenado por nome
 		}
 
-		comparacoes += ordenar.getComparacoes();
-		movimentacoes += ordenar.getTrocas();
+		comparacoes = ordenar.getComparacoes();
+		movimentacoes = ordenar.getMovimentacoes();
 
 		long fim = System.currentTimeMillis();
 		gerarLog(inicio, fim, comparacoes, movimentacoes);
@@ -134,16 +134,14 @@ class Shell {
 	 * @param args
 	 */
 
-	private int comparacoes;
-	private int trocas;
+	private int comparacoes = 0;
+	private int movimentacoes = 0;
 
 	public Jogador[] sort(Jogador[] array, int n) {
 		return method(array, n);
 	}
 
 	private Jogador[] method(Jogador[] array, int n) {
-		this.comparacoes = 0;
-		this.trocas = 0;
 		int h = 1;
 
 		do {
@@ -171,10 +169,10 @@ class Shell {
 					|| (array[j].getNome().compareTo(tmp.getNome()) > 0 && array[j].getPeso() == tmp.getPeso())))) {
 				array[j + h] = array[j];
 				j -= h;
-				this.comparacoes += 2;
+				this.comparacoes++;
 			}
 			array[j + h] = tmp;
-			this.trocas++;
+			this.movimentacoes++;
 		}
 	}
 
@@ -182,8 +180,8 @@ class Shell {
 		return this.comparacoes;
 	}
 
-	public int getTrocas() {
-		return this.trocas;
+	public int getMovimentacoes() {
+		return this.movimentacoes;
 	}
 
 }

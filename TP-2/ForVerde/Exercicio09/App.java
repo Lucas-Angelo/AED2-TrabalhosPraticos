@@ -72,7 +72,7 @@ public class App {
 	public static int qtdLinhas(ArquivoTextoLeitura leitura) {
 		int qtd = 0;
 		String linhaLida = new String();
-		leitura.abrirArquivo("players.csv");
+		leitura.abrirArquivo("/tmp/players.csv");
 
 		leitura.ler(); // O cabecalho, tem que pular a primeira linha
 		linhaLida = leitura.ler();
@@ -92,7 +92,7 @@ public class App {
 		for (int i = 0; i < qtdLinhas; i++)
 			players[i] = new Jogador(); // Cria o objeto para cada um
 
-		leitura.abrirArquivo("players.csv");
+		leitura.abrirArquivo("/tmp/players.csv");
 
 		leitura.ler(); // Remove o cabecalho
 		for (int i = 0; i < qtdLinhas; i++) {

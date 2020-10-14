@@ -10,8 +10,8 @@ import java.io.InputStreamReader;
 public class App {
 
 	public static void main(String[] args) throws IOException {
-		int comparacoes = 0; // Para o log
-		int movimentacoes = 0; // Para o log
+		int comparacoes; // Para o log
+		int movimentacoes; // Para o log
 
 		long inicio = System.currentTimeMillis(); // Para o log
 
@@ -50,8 +50,8 @@ public class App {
 			vetor[i].imprimir(); // Imprime os dados do vetor ordenado por nome
 		}
 
-		comparacoes += ordenar.getComparacoes();
-		movimentacoes += ordenar.getTrocas();
+		comparacoes = ordenar.getComparacoes();
+		movimentacoes = ordenar.getMovimentacoes();
 
 		long fim = System.currentTimeMillis();
 		gerarLog(inicio, fim, comparacoes, movimentacoes);
@@ -134,17 +134,14 @@ class Selection {
 	 * @param args
 	 */
 
-	private int comparacoes;
-	private int trocas;
+	private int comparacoes = 0;
+	private int movimentacoes = 0;
 
 	public Jogador[] sort(Jogador[] vetor, int n) { // Metodo para chmar ordenacao privada
 		return method(vetor, n);
 	}
 
 	private Jogador[] method(Jogador[] vetor, int n) { // Metodo que retorna o vetor jogadores ordenado por nome
-		this.comparacoes = 0;
-		this.trocas = 0;
-
 		for (int i = 0; i < (n - 1); i++) {
 			int menor = i;
 			for (int j = (i + 1); j < n; j++) {
@@ -155,11 +152,11 @@ class Selection {
 				}
 				this.comparacoes++;
 			}
-			if (menor != i) { // Para economizar trocar, se o menor for diferente de ID faz as trocas
+			if (menor != i) { // Para economizar trocar, se o menor for diferente de ID faz as movimentacoes
 				Jogador temp = vetor[i]; // Cria um objeto Jogador temporario auxiliar para receber o vetor na posicao i
 				vetor[i] = vetor[menor]; // O vetor na posicao i agora recebe o menor, para trocar
 				vetor[menor] = temp; // O menor recebe o antigo vetor na posicao i (temp)
-				this.trocas += 2;
+				this.movimentacoes++;
 			}
 		}
 		return vetor;
@@ -169,8 +166,8 @@ class Selection {
 		return this.comparacoes;
 	}
 
-	public int getTrocas() {
-		return this.trocas;
+	public int getMovimentacoes() {
+		return this.movimentacoes;
 	}
 
 }

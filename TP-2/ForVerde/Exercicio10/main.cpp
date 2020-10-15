@@ -43,7 +43,7 @@ int main( )
 }
 
 int qtdLinhas(){
-    FILE *arquivo = fopen("players.csv", "r");
+    FILE *arquivo = fopen("/tmp/players.csv", "r");
     int qtd=0;
     char linha[255];
     char *informacoes_linha[8];
@@ -74,7 +74,7 @@ void strSplit(char *strTOsplit,char *strArr[], char strSeparet,int nArr)
 void criarJogadores(Jogador jogadores[])
 {
     FILE *arquivo;
-    arquivo = fopen("players.csv", "r");
+    arquivo = fopen("/tmp/players.csv", "r");
 
     char linha[255];
     char *informacoes_linha[8];

@@ -1,0 +1,12 @@
+# depslib dependency file v1.0
+1602809306 source:c:\users\lcs20\documents\repositorios\aed2-trabalhospraticos\tp-2\exercicio12\main.c
+	<stdio.h>
+	<string.h>
+	<stdlib.h>
+
+1602813032 source:c:\users\josem\documents\meusprojetos\aed2-trabalho01\tp-2\exercicio12\main.c
+	<stdio.h>
+	<string.h>
+	<stdlib.h>
+	<time.h>
+

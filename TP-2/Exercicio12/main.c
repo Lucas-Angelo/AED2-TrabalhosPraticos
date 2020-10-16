@@ -1,6 +1,7 @@
 #include <stdio.h>
 #include <string.h>
 #include <stdlib.h>
+#include <time.h>
 
 typedef struct Jogador {
     int id;
@@ -18,12 +19,15 @@ void strSplit(char *strTOsplit,char *strArr[], char strSeparet,int nArr);
 void criarJogadores(Jogador jogadores[]);
 Jogador copiarJogador (Jogador jogador);
 void imprimirJogador(Jogador jogadores);
-void bubble(Jogador players[], int n);
+void bubble(Jogador players[], int n, time_t t_ini);
 
 int qtdJogadores;
 
 int main( )
 {
+    time_t t_ini;
+    t_ini = time(NULL);
+
     qtdJogadores = qtdLinhas();
     Jogador players[qtdJogadores];
 
@@ -51,11 +55,12 @@ int main( )
         playersEntrada[j] = copiarJogador(players[ids[j]]);
     }
 
-    bubble(playersEntrada, i);
+    bubble(playersEntrada, i, t_ini);
 
     for(int j=0; j<i; j++){
         imprimirJogador(playersEntrada[j]);
     }
+
 
 
     return 0;
@@ -156,8 +161,14 @@ void imprimirJogador(Jogador jogadores){
     }
 }
 
-void bubble(Jogador players[], int n) {
-    int comparacoes, movimentacoes;
+void bubble(Jogador players[], int n, time_t t_ini) {
+
+    float tempo;
+    time_t t_fim;
+    int c;
+    int t;
+
+    int comparacoes=0, movimentacoes=0;
     for (int i = (n - 1); i > 0; i--) {
         for (int j = 0; j < i; j++) {
             if (players[j].anoNascimento > players[j + 1].anoNascimento
@@ -170,4 +181,14 @@ void bubble(Jogador players[], int n) {
             comparacoes++;
         }
     }
+
+    t_fim = time(NULL);
+
+    tempo = difftime(t_fim, t_ini);
+
+    FILE *pont_log;
+
+    pont_log = fopen ("matricula_bolha.txt", "wt");
+    fprintf (pont_log, "705903,692669,689603 %f %d %d", tempo, comparacoes, movimentacoes);
+    fclose (pont_log);
 }

@@ -1,0 +1,6 @@
+# depslib dependency file v1.0
+1602871461 source:c:\users\lcs20\documents\repositorios\aed2-trabalhospraticos\tp-2\exercicio11\main.c
+	<stdio.h>
+	<string.h>
+	<stdlib.h>
+

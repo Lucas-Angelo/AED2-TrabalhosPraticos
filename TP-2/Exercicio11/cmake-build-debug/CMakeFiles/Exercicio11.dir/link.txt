@@ -1,3 +1,0 @@
-"C:\Program Files\JetBrains\CLion 2020.2\bin\cmake\win\bin\cmake.exe" -E rm -f CMakeFiles\Exercicio11.dir/objects.a
-C:\MinGW\bin\ar.exe cr CMakeFiles\Exercicio11.dir/objects.a @CMakeFiles\Exercicio11.dir\objects1.rsp
-C:\MinGW\bin\gcc.exe -g   -Wl,--whole-archive CMakeFiles\Exercicio11.dir/objects.a -Wl,--no-whole-archive  -o Exercicio11.exe -Wl,--out-implib,libExercicio11.dll.a -Wl,--major-image-version,0,--minor-image-version,0 @CMakeFiles\Exercicio11.dir\linklibs.rsp

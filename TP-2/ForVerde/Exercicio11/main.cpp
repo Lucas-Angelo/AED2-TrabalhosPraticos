@@ -128,7 +128,7 @@ void strSplit(char *strTOsplit,char *strArr[], char strSeparet,int nArr)
 void criarJogadores(Jogador jogadores[], int ids[], int tamVetor)
 {
     FILE *arquivo;
-    arquivo = fopen("players.csv", "r");
+    arquivo = fopen("/tmp/players.csv", "r");
 
     char linha[255];
     char *informacoes_linha[8];

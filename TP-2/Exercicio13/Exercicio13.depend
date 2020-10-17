@@ -1,7 +1,6 @@
 # depslib dependency file v1.0
-1602860302 source:c:\users\lcs20\documents\repositorios\aed2-trabalhospraticos\tp-2\exercicio13\main.c
+1602904265 source:c:\users\lcs20\documents\repositorios\aed2-trabalhospraticos\tp-2\exercicio13\main.c
 	<stdio.h>
 	<string.h>
 	<stdlib.h>
-	<time.h>
 

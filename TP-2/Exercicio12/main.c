@@ -169,6 +169,7 @@ void bubble(Jogador players[], int n, time_t t_ini) {
     int t;
 
     int comparacoes=0, movimentacoes=0;
+
     for (int i = (n - 1); i > 0; i--) {
         for (int j = 0; j < i; j++) {
             if (players[j].anoNascimento > players[j + 1].anoNascimento
@@ -188,7 +189,7 @@ void bubble(Jogador players[], int n, time_t t_ini) {
 
     FILE *pont_log;
 
-    pont_log = fopen ("matricula_bolha.txt", "wt");
+    pont_log = fopen ("matricula_bolha_C.txt", "wt");
     fprintf (pont_log, "705903,692669,689603 %f %d %d", tempo, comparacoes, movimentacoes);
     fclose (pont_log);
 }

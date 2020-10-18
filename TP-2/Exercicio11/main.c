@@ -30,6 +30,13 @@ int buscaBinariaRecursiva(Jogador players[], int menor, int maior, char procurad
 
 int main()
 {
+
+    time_t t_ini;
+    t_ini = time(NULL);
+
+    float tempo;
+    time_t t_fim;
+
     char idString[10];
     int posicaoEntrada=0;
     int vetorIDs[150];
@@ -67,12 +74,24 @@ int main()
     int res;
     for(int i=0; i<posicaoNome; i++){
         res = buscaBinariaRecursiva(playersEntrada, 0, posicaoEntrada, vetNomes[i].nome);
+        comparacoes ++;
+        movimentacoes ++;
 
         if(res!=-1)
             printf("SIM\n");
         else
             printf("NAO\n");
     }
+
+    t_fim = time(NULL);
+
+    tempo = difftime(t_fim, t_ini);
+
+    FILE *pont_log;
+
+    pont_log = fopen ("matricula_binaria_C.txt", "wt");
+    fprintf (pont_log, "705903,692669,689603 %f %d %d", tempo, comparacoes, movimentacoes);
+    fclose (pont_log);
 
     return 0;
 }
@@ -177,6 +196,8 @@ void bubble(Jogador players[], int n) {
 
 int cont=0;
 int buscaBinariaRecursiva(Jogador players[], int menor, int maior, char procurado[]) {
+
+
     int meio = (maior + menor) / 2;
     Jogador doMeio = copiarJogador(players[meio]);
     char semAsterisco[50];
@@ -194,4 +215,6 @@ int buscaBinariaRecursiva(Jogador players[], int menor, int maior, char procurad
         return buscaBinariaRecursiva(players, meio+1, maior, procurado);
     else
         return buscaBinariaRecursiva(players, menor, meio-1, procurado);
+
+
 }

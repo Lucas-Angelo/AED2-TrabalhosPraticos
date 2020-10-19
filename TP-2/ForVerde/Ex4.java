@@ -7,27 +7,11 @@ import java.io.FileWriter;
 import java.io.IOException;
 import java.io.InputStreamReader;
 
-public class App {
-
-	/*
-	 * Considerações: 1- Para o log, colocamos 3 matrículas dos integrantes do nosso
-	 * grupo separadas por vírgulas, em seguidas os outros dados
-	 * 
-	 * 2- Não preenchemos nosso vetor que possuia todos os jogadores removendo o
-	 * asterisco do nome, criamos o código para fazer isso, mas deixamos comentado.
-	 * Para verificar se o nome informado existia e printar SIM/NAO nós verificamos
-	 * o nome com e sem o asterisco. Com isso não alteramos a tabela original,
-	 * apenas o que era solicitado, diante disso, algumas comparações a mais foram
-	 * necessárias para chegar em 100%.
-	 * 
-	 * 3- Em relação ao número de comparações, foi contado apenas as comparações
-	 * dentro da main, pois nas as outras funcoes sao as genericas vindas da questão
-	 * 1.
-	 * 
-	 */
+public class Ex4 {
 
 	public static void main(String[] args) throws IOException {
 		int comparacoes = 0; // Para o log
+		int movimentacoes = 0; // Para o log
 
 		long inicio = System.currentTimeMillis(); // Para o log
 
@@ -39,7 +23,6 @@ public class App {
 		int qtdJogadores = qtdLinhas(leitura); // Cada linha é um jogador, procurar o número de linhas pra facilitar
 		int i = 0; // Utilizado para selecionar posicoes do vetor com alguns jogadores, e no final
 					// saber quantos jogadores tem no vetor
-		int z = 0;
 		int qtdJogadoresVetor;
 
 		Jogador[] players = preencherVetorJogador(leitura, qtdJogadores);
@@ -55,71 +38,35 @@ public class App {
 				i++;
 
 			}
+			comparacoes++; // + Uma comparacao
 		} while (!(entrada.equals("FIM")));
 
 		qtdJogadoresVetor = i; // Agora ja se sabe quantos jogadores existem nesse vetor
 
-		do {
-			entrada = in.readLine();
-			boolean res = false; // Quando for verdadeiro vai mostrar SIM, existe esse jogador no vetor
-									// preenchido
+		Insertion ordenar = new Insertion();// Objeto da classe que possui o metodo de ordenar
 
-			if (!(entrada.equals("FIM"))) {
+		vetor = ordenar.sort(vetor, qtdJogadoresVetor); // Vetor recebe de jogadores recebe ele mesmo ordenado por nome
 
-				char ultimaLetra = entrada.charAt(entrada.length() - 1);
-				String entradaSemAsterisco = new String("");
-				if (ultimaLetra == '*') { // + Uma comparacao
-					for (z = 0; z < entrada.length() - 1; z++) {
-						entradaSemAsterisco += entrada.charAt(z); // Se existir vai reescrever o nome sem asterisco
-					}
-				} else {
-					entradaSemAsterisco = entrada;
-				}
+		for (i = 0; i < qtdJogadoresVetor; i++) {
+			vetor[i].imprimir(); // Imprime os dados do vetor ordenado por nome
+			comparacoes++;
+		}
 
-				// Para diminuir custo, caso encontre o jogador pode finalizar o for
-				for (i = 0; i < qtdJogadoresVetor && !res; i++) { // + Uma comparacao de
-
-					// Verificacao para saber se o nome informado existe na tabela com ou sem
-					// asterisco
-					String nome = vetor[i].getNome();
-					char ultima = nome.charAt(nome.length() - 1);
-					String nomeSemAsterisco = new String("");
-					// Detecta se na ultima posicao do nome do jogador atual existe um asterisco
-					if (ultima == '*') { // + Uma comparacao
-						for (z = 0; z < nome.length() - 1; z++) {
-							nomeSemAsterisco += nome.charAt(z); // Se existir vai reescrever o nome sem asterisco
-						}
-					} else {
-						nomeSemAsterisco = vetor[i].getNome();
-					}
-
-					// Se exister o nome imprime SIM
-					if (entradaSemAsterisco.equals(nomeSemAsterisco)) {
-						res = true;
-					}
-					comparacoes++;
-				}
-
-				if (res)
-					System.out.println("SIM");
-				else
-					System.out.println("NAO");
-
-			}
-		} while (!(entrada.equals("FIM")));
+		comparacoes += ordenar.getComparacoes();
+		movimentacoes += ordenar.getMovimentacoes();
 
 		long fim = System.currentTimeMillis();
-		gerarLog(inicio, fim, comparacoes);
+		gerarLog(inicio, fim, comparacoes, movimentacoes);
 
 	}
 
-	public static void gerarLog(long inicio, long fim, int comparacoes) {
+	public static void gerarLog(long inicio, long fim, int comparacoes, int movimentacoes) {
 		long mili = fim - inicio;
 
 		ArquivoTextoEscrita escrita = new ArquivoTextoEscrita();
-		String log = new String("705903,692669,689603\t" + mili + "\t" + comparacoes);
+		String log = new String("705903,692669,689603\t" + mili + "\t" + comparacoes + "\t" + movimentacoes);
 
-		escrita.abrirArquivo("matricula_sequencial.txt");
+		escrita.abrirArquivo("matricula_insercao.txt");
 		escrita.escrever(log); // Escreve no arquivo criado o log.
 		escrita.fecharArquivo();
 	}
@@ -179,6 +126,48 @@ public class App {
 		leitura.fecharArquivo();
 
 		return players;
+	}
+
+}
+
+class Insertion {
+
+	private int comparacoes = 0;
+	private int movimentacoes = 0;
+
+	/**
+	 * @param args
+	 */
+	public Jogador[] sort(Jogador[] array, int n) {
+		return method(array, n);
+	}
+
+	private Jogador[] method(Jogador[] array, int n) {
+		for (int i = 1; i < n; i++) {
+			Jogador tmp = new Jogador();
+			tmp = array[i].clone();
+			int j = i - 1;
+
+			while (((j >= 0) && ((array[j].getAnoNascimento() > tmp.getAnoNascimento())
+					|| (array[j].getNome().compareTo(tmp.getNome()) > 0
+							&& array[j].getAnoNascimento() == tmp.getAnoNascimento())))) {
+				comparacoes ++;
+				movimentacoes ++;
+				array[j + 1] = array[j];
+				j--;
+			}
+			comparacoes ++;
+			array[j + 1] = tmp;
+		}
+		return array;
+	}
+
+	public int getComparacoes() {
+		return this.comparacoes;
+	}
+
+	public int getMovimentacoes() {
+		return this.movimentacoes;
 	}
 
 }

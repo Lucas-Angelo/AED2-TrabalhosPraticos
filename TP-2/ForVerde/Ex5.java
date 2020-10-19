@@ -7,7 +7,7 @@ import java.io.FileWriter;
 import java.io.IOException;
 import java.io.InputStreamReader;
 
-public class App {
+public class Ex5 {
 
 	public static void main(String[] args) throws IOException {
 		int comparacoes; // Para o log

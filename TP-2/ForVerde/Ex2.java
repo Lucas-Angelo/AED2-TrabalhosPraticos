@@ -7,11 +7,27 @@ import java.io.FileWriter;
 import java.io.IOException;
 import java.io.InputStreamReader;
 
-public class App {
+public class Ex2 {
+
+	/*
+	 * Considerações: 1- Para o log, colocamos 3 matrículas dos integrantes do nosso
+	 * grupo separadas por vírgulas, em seguidas os outros dados
+	 * 
+	 * 2- Não preenchemos nosso vetor que possuia todos os jogadores removendo o
+	 * asterisco do nome, criamos o código para fazer isso, mas deixamos comentado.
+	 * Para verificar se o nome informado existia e printar SIM/NAO nós verificamos
+	 * o nome com e sem o asterisco. Com isso não alteramos a tabela original,
+	 * apenas o que era solicitado, diante disso, algumas comparações a mais foram
+	 * necessárias para chegar em 100%.
+	 * 
+	 * 3- Em relação ao número de comparações, foi contado apenas as comparações
+	 * dentro da main, pois nas as outras funcoes sao as genericas vindas da questão
+	 * 1.
+	 * 
+	 */
 
 	public static void main(String[] args) throws IOException {
-		int comparacoes; // Para o log
-		int movimentacoes; // Para o log
+		int comparacoes = 0; // Para o log
 
 		long inicio = System.currentTimeMillis(); // Para o log
 
@@ -20,9 +36,10 @@ public class App {
 
 		ArquivoTextoLeitura leitura = new ArquivoTextoLeitura();
 
-		int qtdJogadores = qtdLinhas(leitura); // Cada linha ï¿½ um jogador, procurar o nï¿½mero de linhas pra facilitar
+		int qtdJogadores = qtdLinhas(leitura); // Cada linha é um jogador, procurar o número de linhas pra facilitar
 		int i = 0; // Utilizado para selecionar posicoes do vetor com alguns jogadores, e no final
 					// saber quantos jogadores tem no vetor
+		int z = 0;
 		int qtdJogadoresVetor;
 
 		Jogador[] players = preencherVetorJogador(leitura, qtdJogadores);
@@ -42,29 +59,67 @@ public class App {
 
 		qtdJogadoresVetor = i; // Agora ja se sabe quantos jogadores existem nesse vetor
 
-		Merge ordenar = new Merge(); // Objeto da classe que possui o metodo de ordenar
+		do {
+			entrada = in.readLine();
+			boolean res = false; // Quando for verdadeiro vai mostrar SIM, existe esse jogador no vetor
+									// preenchido
 
-		vetor = ordenar.sort(vetor, qtdJogadoresVetor); // Vetor recebe de jogadores recebe ele mesmo ordenado por nome
+			if (!(entrada.equals("FIM"))) {
 
-		for (i = 0; i < qtdJogadoresVetor; i++) {
-			vetor[i].imprimir(); // Imprime os dados do vetor ordenado por nome
-		}
+				char ultimaLetra = entrada.charAt(entrada.length() - 1);
+				String entradaSemAsterisco = new String("");
+				if (ultimaLetra == '*') { // + Uma comparacao
+					for (z = 0; z < entrada.length() - 1; z++) {
+						entradaSemAsterisco += entrada.charAt(z); // Se existir vai reescrever o nome sem asterisco
+					}
+				} else {
+					entradaSemAsterisco = entrada;
+				}
 
-		comparacoes = ordenar.getComparacoes();
-		movimentacoes = ordenar.getMovimentacoes();
+				// Para diminuir custo, caso encontre o jogador pode finalizar o for
+				for (i = 0; i < qtdJogadoresVetor && !res; i++) { // + Uma comparacao de
+
+					// Verificacao para saber se o nome informado existe na tabela com ou sem
+					// asterisco
+					String nome = vetor[i].getNome();
+					char ultima = nome.charAt(nome.length() - 1);
+					String nomeSemAsterisco = new String("");
+					// Detecta se na ultima posicao do nome do jogador atual existe um asterisco
+					if (ultima == '*') { // + Uma comparacao
+						for (z = 0; z < nome.length() - 1; z++) {
+							nomeSemAsterisco += nome.charAt(z); // Se existir vai reescrever o nome sem asterisco
+						}
+					} else {
+						nomeSemAsterisco = vetor[i].getNome();
+					}
+
+					// Se exister o nome imprime SIM
+					if (entradaSemAsterisco.equals(nomeSemAsterisco)) {
+						res = true;
+					}
+					comparacoes++;
+				}
+
+				if (res)
+					System.out.println("SIM");
+				else
+					System.out.println("NAO");
+
+			}
+		} while (!(entrada.equals("FIM")));
 
 		long fim = System.currentTimeMillis();
-		gerarLog(inicio, fim, comparacoes, movimentacoes);
+		gerarLog(inicio, fim, comparacoes);
 
 	}
 
-	public static void gerarLog(long inicio, long fim, int comparacoes, int movimentacoes) {
+	public static void gerarLog(long inicio, long fim, int comparacoes) {
 		long mili = fim - inicio;
 
 		ArquivoTextoEscrita escrita = new ArquivoTextoEscrita();
-		String log = new String("705903,692669,689603\t" + mili + "\t" + comparacoes + "\t" + movimentacoes);
+		String log = new String("705903,692669,689603\t" + mili + "\t" + comparacoes);
 
-		escrita.abrirArquivo("matricula_mergesort.txt");
+		escrita.abrirArquivo("matricula_sequencial.txt");
 		escrita.escrever(log); // Escreve no arquivo criado o log.
 		escrita.fecharArquivo();
 	}
@@ -99,7 +154,7 @@ public class App {
 
 			String[] dadosDaLinha = leitura.ler().split(",", 8); // Dividir os dados da linha
 
-			// Caso necessite de remover os asterisco sï¿½ tirar o comenï¿½rio das linhas abaixo
+			// Caso necessite de remover os asterisco só tirar o comenário das linhas abaixo
 			/*
 			 * String nome = dadosDaLinha[1].toString(); char ultima =
 			 * nome.charAt(nome.length()-1);
@@ -124,93 +179,6 @@ public class App {
 		leitura.fecharArquivo();
 
 		return players;
-	}
-
-}
-
-class Merge {
-
-	/**
-	 * @param args
-	 */
-
-	private int comparacoes = 0;
-	private int movimentacoes = 0;
-
-	public Jogador[] sort(Jogador[] vetor, int n) { // Metodo para chmar ordenacao privada
-        int left = 0, rigth = n-1;
-        return method(vetor, left, rigth);
-	}
-
-	private Jogador[] method(Jogador[] vetor, int left, int rigth) { // Metodo que retorna o vetor jogadores ordenado por nome
-        if (left < rigth){
-            int mid = (rigth + left)/2;
-            method(vetor, left, mid);
-            method(vetor, mid+1, rigth);
-            merge(vetor, left, mid, rigth);
-        }
-        return vetor;
-    }
-    
-    private Jogador[] merge (Jogador[] vetor, int left, int mid, int rigth){
-
-        int i, j, k;
-        boolean is1Empty, is2Empty, isFirstLesser, areEqual, isFirstsNameLesser;
-
-        //descobrindo tamanho dos subveores
-        int n1 = mid-left+1;
-        int n2 = rigth-mid;
-
-        //criando subvetores
-        Jogador[] vet1 = new Jogador[n1];
-        Jogador[] vet2 = new Jogador[n2];
-
-        //preenchendo subvetores
-        for(i=0;i<n1;i++){
-            vet1[i] = new Jogador();
-            vet1[i] = vetor[i+left];
-        }
-        for(j=0;j<n2;j++){
-            vet2[j] = new Jogador();
-            vet2[j] = vetor[j+mid+1];
-        }
-
-        //Merge dos dois vetores
-        for (i=0,j=0,k=left; (i<n1 && j<n2 ) ; k++){
-
-            is1Empty = vet1[i].getUniversidade().trim().length() == 0;
-            is2Empty = vet2[j].getUniversidade().trim().length() == 0;
-            isFirstLesser = vet1[i].getUniversidade().compareTo(vet2[j].getUniversidade()) < 0;
-            areEqual = vet1[i].getUniversidade().compareTo(vet2[j].getUniversidade()) == 0;
-            isFirstsNameLesser = vet1[i].getNome().compareTo(vet2[j].getNome()) < 0;
-
-            if ( (!is1Empty && is2Empty) || (!is1Empty && isFirstLesser) || (areEqual && isFirstsNameLesser) )
-                vetor[k] = vet1[i++].clone();
-            else
-                vetor[k] = vet2[j++].clone();
-
-            this.comparacoes++;
-            this.movimentacoes++;
-        }
-        //Finalizar Merge
-        if ( i == n1 ){
-            for (;k<=rigth;k++)
-                vetor[k] = vet2[j++].clone();
-        }
-        else
-            for (;k<=rigth;k++)
-                vetor[k] = vet1[i++].clone();
-
-        return vetor;
-        
-    }
-
-	public int getComparacoes() {
-		return this.comparacoes;
-	}
-
-	public int getMovimentacoes() {
-		return this.movimentacoes;
 	}
 
 }
@@ -242,7 +210,7 @@ class Jogador {
 		this.estadoNascimento = estadoNascimento;
 	}
 
-	// Inï¿½cio GETS
+	// Início GETS
 	public int getId() {
 		return this.id;
 	}
@@ -276,7 +244,7 @@ class Jogador {
 	}
 	// Fim GETS
 
-	// Inï¿½cio SETS
+	// Início SETS
 	public void setId(int id) {
 		this.id = id;
 	}
@@ -431,4 +399,3 @@ class ArquivoTextoEscrita {
 		}
 	}
 }
-

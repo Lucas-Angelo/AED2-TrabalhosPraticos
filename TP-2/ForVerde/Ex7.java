@@ -7,7 +7,7 @@ import java.io.FileWriter;
 import java.io.IOException;
 import java.io.InputStreamReader;
 
-public class App {
+public class Ex7 {
 
 	public static void main(String[] args) throws IOException {
 		int comparacoes; // Para o log
@@ -20,7 +20,7 @@ public class App {
 
 		ArquivoTextoLeitura leitura = new ArquivoTextoLeitura();
 
-		int qtdJogadores = qtdLinhas(leitura); // Cada linha é um jogador, procurar o número de linhas pra facilitar
+		int qtdJogadores = qtdLinhas(leitura); // Cada linha ï¿½ um jogador, procurar o nï¿½mero de linhas pra facilitar
 		int i = 0; // Utilizado para selecionar posicoes do vetor com alguns jogadores, e no final
 					// saber quantos jogadores tem no vetor
 		int qtdJogadoresVetor;
@@ -42,7 +42,7 @@ public class App {
 
 		qtdJogadoresVetor = i; // Agora ja se sabe quantos jogadores existem nesse vetor
 
-		Shell ordenar = new Shell(); // Objeto da classe que possui o metodo de ordenar
+		Quick ordenar = new Quick(); // Objeto da classe que possui o metodo de ordenar
 
 		vetor = ordenar.sort(vetor, qtdJogadoresVetor); // Vetor recebe de jogadores recebe ele mesmo ordenado por nome
 
@@ -64,7 +64,7 @@ public class App {
 		ArquivoTextoEscrita escrita = new ArquivoTextoEscrita();
 		String log = new String("705903,692669,689603\t" + mili + "\t" + comparacoes + "\t" + movimentacoes);
 
-		escrita.abrirArquivo("matricula_shellsort.txt");
+		escrita.abrirArquivo("matricula_quicksort.txt");
 		escrita.escrever(log); // Escreve no arquivo criado o log.
 		escrita.fecharArquivo();
 	}
@@ -99,7 +99,7 @@ public class App {
 
 			String[] dadosDaLinha = leitura.ler().split(",", 8); // Dividir os dados da linha
 
-			// Caso necessite de remover os asterisco só tirar o comenário das linhas abaixo
+			// Caso necessite de remover os asterisco sï¿½ tirar o comenï¿½rio das linhas abaixo
 			/*
 			 * String nome = dadosDaLinha[1].toString(); char ultima =
 			 * nome.charAt(nome.length()-1);
@@ -128,53 +128,85 @@ public class App {
 
 }
 
-class Shell {
+class Quick {
 
 	/**
 	 * @param args
 	 */
 
 	private int comparacoes = 0;
-	private int movimentacoes = 0;
+    private int movimentacoes = 0;
 
-	public Jogador[] sort(Jogador[] array, int n) {
-		return method(array, n);
+	public Jogador[] sort(Jogador[] vetor, int n) { // Metodo para chmar ordenacao privada
+        int left = 0, rigth = n-1;
+        return method(vetor, left, rigth);
 	}
 
-	private Jogador[] method(Jogador[] array, int n) {
-		int h = 1;
+	private Jogador[] method(Jogador[] vetor, int left, int rigth) { // Metodo que retorna o vetor jogadores ordenado por estado
+        int pivot;
+        pivot = orderbyPivot(vetor, left, rigth);
+        if (pivot!= left)
+            method(vetor, left, pivot-1);
+        if (pivot!=rigth)
+            method(vetor, pivot+1, rigth);
+        return vetor;
+    }
+    
+    private int orderbyPivot (Jogador[] vetor, int left, int rigth){
 
-		do {
-			h = (h * 3) + 1;
-		} while (h < n);
+        int i, j, k, n1=0;
+        boolean is1Empty, isPivotEmpty, isFirstLesser, areEqual, isFirstsNameLesser;
 
-		do {
-			h /= 3;
-			for (int inicio = 0; inicio < h; inicio++) {
-				insercao(array, n, inicio, h);
+        //descobrindo tamanho dos subveores
+        int maxsize = rigth - left ;
+
+        //criando subvetores
+        Jogador[] maiores = new Jogador[maxsize];
+        Jogador[] menores = new Jogador[maxsize];
+
+        Jogador playerPivot = new Jogador();
+        playerPivot = vetor[left].clone();
+        //Montando dois vetores
+        for (i=0,j=0,k=left+1; k<=rigth ; k++){
+
+            is1Empty = vetor[k].getEstadoNascimento().trim().length() == 0;
+            isPivotEmpty = playerPivot.getEstadoNascimento().trim().length() == 0;
+            isFirstLesser = vetor[k].getEstadoNascimento().compareTo(playerPivot.getEstadoNascimento()) < 0;
+            areEqual = vetor[k].getEstadoNascimento().compareTo(playerPivot.getEstadoNascimento()) == 0;
+            isFirstsNameLesser = vetor[k].getNome().compareTo(playerPivot.getNome()) < 0;
+
+            if ( (!is1Empty && isPivotEmpty) || (!is1Empty && isFirstLesser) || (areEqual && isFirstsNameLesser) ){
+				menores[i] = new Jogador();
+				menores[i++] = vetor[k].clone();
 			}
-		} while (h != 1);
-
-		return array;
-	}
-
-	private void insercao(Jogador[] array, int n, int inicio, int h) {
-
-		Jogador tmp = new Jogador();
-
-		for (int i = (h + inicio); i < n; i += h) {
-			tmp = array[i].clone();
-			int j = i - h;
-			while (((j >= 0) && ((array[j].getPeso() > tmp.getPeso())
-					|| (array[j].getNome().compareTo(tmp.getNome()) > 0 && array[j].getPeso() == tmp.getPeso())))) {
-				array[j + h] = array[j];
-				j -= h;
-				this.comparacoes++;
+            else{
+				maiores[j] = new Jogador();
+				maiores[j++] = vetor[k].clone();
 			}
-			array[j + h] = tmp;
+
+            this.comparacoes++;
+		}
+        n1 = i;
+
+        //Juntando subvetores
+        for (k=left; k<n1+left ;k++){
+            vetor[k] = menores[k-left].clone();
 			this.movimentacoes++;
 		}
-	}
+		
+        int pivot = k;
+		vetor[k++] = playerPivot.clone();
+		this.movimentacoes++;
+
+        for (; k<=rigth;k++){
+            vetor[k] = maiores[k-n1-left-1].clone();
+			this.movimentacoes++;
+		}
+		
+
+        return pivot;
+        
+    }
 
 	public int getComparacoes() {
 		return this.comparacoes;
@@ -213,7 +245,7 @@ class Jogador {
 		this.estadoNascimento = estadoNascimento;
 	}
 
-	// Início GETS
+	// Inï¿½cio GETS
 	public int getId() {
 		return this.id;
 	}
@@ -247,7 +279,7 @@ class Jogador {
 	}
 	// Fim GETS
 
-	// Início SETS
+	// Inï¿½cio SETS
 	public void setId(int id) {
 		this.id = id;
 	}

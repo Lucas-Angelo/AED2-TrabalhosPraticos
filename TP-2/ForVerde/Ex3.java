@@ -7,11 +7,11 @@ import java.io.FileWriter;
 import java.io.IOException;
 import java.io.InputStreamReader;
 
-public class App {
+public class Ex3 {
 
 	public static void main(String[] args) throws IOException {
-		int comparacoes = 0; // Para o log
-		int movimentacoes = 0; // Para o log
+		int comparacoes; // Para o log
+		int movimentacoes; // Para o log
 
 		long inicio = System.currentTimeMillis(); // Para o log
 
@@ -38,22 +38,20 @@ public class App {
 				i++;
 
 			}
-			comparacoes++; // + Uma comparacao
 		} while (!(entrada.equals("FIM")));
 
 		qtdJogadoresVetor = i; // Agora ja se sabe quantos jogadores existem nesse vetor
 
-		Insertion ordenar = new Insertion();// Objeto da classe que possui o metodo de ordenar
+		Selection ordenar = new Selection(); // Objeto da classe que possui o metodo de ordenar
 
 		vetor = ordenar.sort(vetor, qtdJogadoresVetor); // Vetor recebe de jogadores recebe ele mesmo ordenado por nome
 
 		for (i = 0; i < qtdJogadoresVetor; i++) {
 			vetor[i].imprimir(); // Imprime os dados do vetor ordenado por nome
-			comparacoes++;
 		}
 
-		comparacoes += ordenar.getComparacoes();
-		movimentacoes += ordenar.getMovimentacoes();
+		comparacoes = ordenar.getComparacoes();
+		movimentacoes = ordenar.getMovimentacoes();
 
 		long fim = System.currentTimeMillis();
 		gerarLog(inicio, fim, comparacoes, movimentacoes);
@@ -66,7 +64,7 @@ public class App {
 		ArquivoTextoEscrita escrita = new ArquivoTextoEscrita();
 		String log = new String("705903,692669,689603\t" + mili + "\t" + comparacoes + "\t" + movimentacoes);
 
-		escrita.abrirArquivo("matricula_insercao.txt");
+		escrita.abrirArquivo("matricula_selecao.txt");
 		escrita.escrever(log); // Escreve no arquivo criado o log.
 		escrita.fecharArquivo();
 	}
@@ -130,36 +128,38 @@ public class App {
 
 }
 
-class Insertion {
-
-	private int comparacoes = 0;
-	private int movimentacoes = 0;
+class Selection {
 
 	/**
 	 * @param args
 	 */
-	public Jogador[] sort(Jogador[] array, int n) {
-		return method(array, n);
+
+	private int comparacoes = 0;
+	private int movimentacoes = 0;
+
+	public Jogador[] sort(Jogador[] vetor, int n) { // Metodo para chmar ordenacao privada
+		return method(vetor, n);
 	}
 
-	private Jogador[] method(Jogador[] array, int n) {
-		for (int i = 1; i < n; i++) {
-			Jogador tmp = new Jogador();
-			tmp = array[i].clone();
-			int j = i - 1;
-
-			while (((j >= 0) && ((array[j].getAnoNascimento() > tmp.getAnoNascimento())
-					|| (array[j].getNome().compareTo(tmp.getNome()) > 0
-							&& array[j].getAnoNascimento() == tmp.getAnoNascimento())))) {
-				comparacoes ++;
-				movimentacoes ++;
-				array[j + 1] = array[j];
-				j--;
+	private Jogador[] method(Jogador[] vetor, int n) { // Metodo que retorna o vetor jogadores ordenado por nome
+		for (int i = 0; i < (n - 1); i++) {
+			int menor = i;
+			for (int j = (i + 1); j < n; j++) {
+				// Se o nome do jogador na posicao menor der maior que zero na comparacao com o
+				// nome do jogador na posicao atual, troca o menor
+				if ((vetor[menor].getNome()).compareTo(vetor[j].getNome()) > 0) {
+					menor = j;
+				}
+				this.comparacoes++;
 			}
-			comparacoes ++;
-			array[j + 1] = tmp;
+			if (menor != i) { // Para economizar trocar, se o menor for diferente de ID faz as movimentacoes
+				Jogador temp = vetor[i]; // Cria um objeto Jogador temporario auxiliar para receber o vetor na posicao i
+				vetor[i] = vetor[menor]; // O vetor na posicao i agora recebe o menor, para trocar
+				vetor[menor] = temp; // O menor recebe o antigo vetor na posicao i (temp)
+				this.movimentacoes++;
+			}
 		}
-		return array;
+		return vetor;
 	}
 
 	public int getComparacoes() {

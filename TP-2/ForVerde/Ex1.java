@@ -1,6 +1,6 @@
 import java.io.*;
 
-public class App {
+public class Ex1 {
 	
 	/*
 	 * Considerações:

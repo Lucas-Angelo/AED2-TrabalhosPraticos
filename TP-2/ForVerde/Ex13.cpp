@@ -22,9 +22,13 @@ void strSplit(char *strTOsplit,char *strArr[], char strSeparet,int nArr);
 Jogador** criarJogadores(Jogador **jogadores, struct vetIDs ids[], int tamVetor);
 Jogador* copiarJogador (Jogador *jogador);
 void imprimirJogador(Jogador **jogadores, int tam);
-void selecao(Jogador **vetor, int n, int i, int j, int menor, time_t t_ini);
+void selecao(Jogador **vetor, int n, int i, int j, int menor);
+
+int comparacoes=0;
+int movimentacoes=0;
 
 int main(){
+
     time_t t_ini;
     t_ini = time(NULL);
 
@@ -53,7 +57,7 @@ int main(){
 
     ptrJogadores = criarJogadores(ptrJogadores, vetorIDs, numeroDeJogadores);
 
-    selecao(ptrJogadores, numeroDeJogadores, 0, 1, 0, t_ini);
+    selecao(ptrJogadores, numeroDeJogadores, 0, 1, 0);
 
     imprimirJogador(ptrJogadores, numeroDeJogadores);
 
@@ -66,9 +70,16 @@ int main(){
     }
     free (ptrJogadores);
 
+    float tempo;
+    time_t t_fim;
 
+    t_fim = time(NULL);
+    tempo = difftime(t_fim, t_ini);
 
-
+    FILE *pont_log;
+    pont_log = fopen ("matricula_selecaoRecursiva_C.txt", "wt");
+    fprintf (pont_log, "705903,692669,689603 %f %d %d", tempo, comparacoes, movimentacoes);
+    fclose (pont_log);
 
     return 0;
 }
@@ -202,9 +213,7 @@ void imprimirJogador(Jogador **jogadores, int tam){
     }
 }
 
-int comparacoes=0;
-int movimentacoes=0;
-void selecao(Jogador **vetor, int n, int i, int j, int menor, time_t t_ini) {
+void selecao(Jogador **vetor, int n, int i, int j, int menor) {
 
     if(i < (n - 1)){
         if(j < n){
@@ -214,7 +223,7 @@ void selecao(Jogador **vetor, int n, int i, int j, int menor, time_t t_ini) {
                 menor = j;
             }
             comparacoes++;
-            selecao(vetor, n, i, j+1, menor, t_ini);
+            selecao(vetor, n, i, j+1, menor);
         }
         if(j==n){
 
@@ -223,17 +232,7 @@ void selecao(Jogador **vetor, int n, int i, int j, int menor, time_t t_ini) {
             vetor[menor] = temp;
             movimentacoes++;
 
-            selecao(vetor, n, i+1, i+2, i+1, t_ini);
+            selecao(vetor, n, i+1, i+2, i+1);
         }
     }
-
-    float tempo;
-    time_t t_fim;
-    t_fim = time(NULL);
-    tempo = difftime(t_fim, t_ini);
-    FILE *pont_log;
-
-    pont_log = fopen ("matricula_selecaoRecursiva_C..txt", "wt");
-    fprintf (pont_log, "705903,692669,689603 %f %d %d", tempo, comparacoes, movimentacoes);
-    fclose (pont_log);
 }

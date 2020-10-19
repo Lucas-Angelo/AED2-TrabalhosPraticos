@@ -5,77 +5,72 @@
 
 typedef struct Jogador {
     int id;
-    char nome[50];
+    char *nome;
     int altura;
     int peso;
-    char universidade[150];
+    char *universidade;
     int anoNascimento;
-    char cidadeNascimento[150];
-    char estadoNascimento[150];
+    char *cidadeNascimento;
+    char *estadoNascimento;
 } Jogador;
 
-int qtdLinhas();
+typedef struct vetIDs {
+    int id;
+} vetIDs;
+
 void strSplit(char *strTOsplit,char *strArr[], char strSeparet,int nArr);
-void criarJogadores(Jogador jogadores[]);
-Jogador copiarJogador (Jogador jogador);
-void imprimirJogador(Jogador jogadores);
-void selecao(Jogador players[], int n, int indiceI, int indiceJ, int menor,  time_t t_ini);
+Jogador** criarJogadores(Jogador **jogadores, struct vetIDs ids[], int tamVetor);
+Jogador* copiarJogador (Jogador *jogador);
+void imprimirJogador(Jogador **jogadores, int tam);
+void selecao(Jogador **vetor, int n, int i, int j, int menor, time_t t_ini);
 
-int qtdJogadores;
-
-int main( )
-{
+int main(){
     time_t t_ini;
     t_ini = time(NULL);
 
-    qtdJogadores = qtdLinhas();
-    Jogador players[qtdJogadores];
-
-    criarJogadores(players);
-
-    int finaliza;
-    char texto[50];
-    int i=0;
-    int ids[1000];
+    char idEntrada[10];
+    int posID=0;
+    vetIDs vetorIDs[500];
 
     do {
-        fgets(texto, sizeof(texto), stdin);
-        finaliza = strcmp(texto, "FIM\n");
+        fgets(idEntrada, sizeof(idEntrada), stdin);
+        idEntrada[strlen(idEntrada)-1]='\0';
 
-        if(finaliza){
-            ids[i] = atoi(texto);
-            i++;
+        if(strcmp(idEntrada, "FIM")!=0){
+            vetorIDs[posID].id = atoi(idEntrada);
+            posID++;
         }
 
-    } while (finaliza);
+    } while (strcmp(idEntrada, "FIM")!=0);
 
-    Jogador playersEntrada[i];
+    int numeroDeJogadores=posID;
 
-    for(int j=0; j<i; j++){
-        playersEntrada[j] = copiarJogador(players[ids[j]]);
+    Jogador **ptrJogadores = (Jogador**) calloc(numeroDeJogadores, sizeof(Jogador*));
+    if ( ptrJogadores == NULL) {
+        printf ( "erro no calloc\n");
+        exit(1);
     }
 
-    selecao(playersEntrada, i, 0, 1, 0, t_ini);
+    ptrJogadores = criarJogadores(ptrJogadores, vetorIDs, numeroDeJogadores);
 
-    for(int j=0; j<i; j++){
-        imprimirJogador(playersEntrada[j]);
+    selecao(ptrJogadores, numeroDeJogadores, 0, 1, 0, t_ini);
+
+    imprimirJogador(ptrJogadores, numeroDeJogadores);
+
+    for (int f = 0; f < numeroDeJogadores; f++) {
+        free(ptrJogadores[f]->nome);
+        free(ptrJogadores[f]->universidade);
+        free(ptrJogadores[f]->cidadeNascimento);
+        free(ptrJogadores[f]->estadoNascimento);
+        free ( ptrJogadores[f]);
     }
+    free (ptrJogadores);
+
+
+
 
 
     return 0;
-}
-
-int qtdLinhas(){
-    FILE *arquivo = fopen("/tmp/players.csv", "r");
-    int qtd=0;
-    char linha[255];
-    char *informacoes_linha[8];
-    while(fgets(linha, sizeof(linha), arquivo)){
-        strSplit(linha, informacoes_linha, ',',8);
-        if(strcmp(informacoes_linha[0], "id")!=0)
-            qtd++;
-    }
-    return qtd;
 }
 
 void strSplit(char *strTOsplit,char *strArr[], char strSeparet,int nArr)
@@ -94,7 +89,7 @@ void strSplit(char *strTOsplit,char *strArr[], char strSeparet,int nArr)
     }
 }
 
-void criarJogadores(Jogador jogadores[])
+Jogador** criarJogadores(Jogador **jogadores, struct vetIDs ids[], int tamVetor)
 {
     FILE *arquivo;
     arquivo = fopen("/tmp/players.csv", "r");
@@ -102,73 +97,120 @@ void criarJogadores(Jogador jogadores[])
     char linha[255];
     char *informacoes_linha[8];
     int i=0;
+    int no=0;
+
     while (fgets(linha, sizeof(linha), arquivo))  // Enquando não chegar no fim do arquivo..
     {
 
         strSplit(linha, informacoes_linha, ',', 8); //Separa os campos e os armazena no vetor de 3 posições chamado informacoes_linha
         if(strcmp(informacoes_linha[0], "id")!=0){
-            //isso é uma função eveline :)
-            //Cada posição do vetor VetorEmpregados guarda não so uma mas tres informações.
-            jogadores[i].id = atoi(informacoes_linha[0]);
-            strcpy(jogadores[i].nome, ((const char*)(informacoes_linha[1])));
-            jogadores[i].altura = atoi(informacoes_linha[2]);
-            jogadores[i].peso = atoi(informacoes_linha[3]);
-            strcpy(jogadores[i].universidade, ((const char*)informacoes_linha[4]));
-            jogadores[i].anoNascimento = atoi(informacoes_linha[5]);
-            strcpy(jogadores[i].cidadeNascimento, ((const char*)informacoes_linha[6]));
-            strcpy(jogadores[i].estadoNascimento, ((const char*)informacoes_linha[7]));
-            i++;
+
+            for(int z=0; z<tamVetor; z++){
+                if(atoi(informacoes_linha[0])==ids[z].id && !(atoi(informacoes_linha[0])==222 && no==1)){
+
+                    if(atoi(informacoes_linha[0])==222){
+                        no=1;
+                    }
+
+
+                    jogadores[i] = (Jogador*) malloc( sizeof(struct Jogador));
+                    if ( jogadores[i] == NULL) {
+                        printf ( "erro no malloc linha");
+                        exit ( 1);
+                    }
+
+                    jogadores[i]->nome = (char*) malloc( 1 + strlen(informacoes_linha[1]));// memoria para nome + 1 para o '\0'
+                    if ( jogadores[i]->nome == NULL) {
+                        printf ( "falha no nome malloc\n");
+                        exit (1);
+                    }
+                    jogadores[i]->universidade = (char*) malloc( 1 + strlen(informacoes_linha[4]));
+                    if ( jogadores[i]->universidade == NULL) {
+                        printf ( "falha no universidade malloc\n");
+                        exit (1);
+                    }
+
+                    jogadores[i]->cidadeNascimento = (char*) malloc( 1 + strlen(informacoes_linha[6]));
+                    if ( jogadores[i]->cidadeNascimento == NULL) {
+                        printf ( "falha no cidadeNascimento malloc\n");
+                        exit (1);
+                    }
+
+                    jogadores[i]->estadoNascimento = (char*) malloc( 1 + strlen(informacoes_linha[7]));
+                    if ( jogadores[i]->estadoNascimento == NULL) {
+                        printf ( "falha no estadoNascimento malloc\n");
+                        exit (1);
+                    }
+
+                    //Cada posição do vetor VetorEmpregados guarda não so uma mas tres informações.
+                    jogadores[i]->id = atoi(informacoes_linha[0]);
+                    strcpy(jogadores[i]->nome, ((const char*)(informacoes_linha[1])));
+                    jogadores[i]->altura = atoi(informacoes_linha[2]);
+                    jogadores[i]->peso = atoi(informacoes_linha[3]);
+                    strcpy(jogadores[i]->universidade, ((const char*)informacoes_linha[4]));
+                    jogadores[i]->anoNascimento = atoi(informacoes_linha[5]);
+                    strcpy(jogadores[i]->cidadeNascimento, ((const char*)informacoes_linha[6]));
+                    strcpy(jogadores[i]->estadoNascimento, ((const char*)informacoes_linha[7]));
+                    i++;
+                }
+            }
+
         }
 
     }
+    return jogadores;
 }
 
-Jogador copiarJogador (Jogador jogador){
-    return jogador;
+Jogador* copiarJogador (Jogador *jogador){
+    Jogador *retornado=jogador;
+    return retornado;
 }
 
-void imprimirJogador(Jogador jogadores){
-    printf("[%d ## ", jogadores.id);
+void imprimirJogador(Jogador **jogadores, int tam){
 
-    printf("%s ## ", jogadores.nome);
+    for(int i=0; i<tam; i++){
+        printf("[%d ## ", jogadores[i]->id);
 
-    printf("%d ## ", jogadores.altura);
+        printf("%s ## ", jogadores[i]->nome);
 
-    printf("%d ## ", jogadores.peso);
+        printf("%d ## ", jogadores[i]->altura);
 
-    printf("%d ## ", jogadores.anoNascimento);
+        printf("%d ## ", jogadores[i]->peso);
 
-    if (strcmp(jogadores.universidade,"")==0) { // Se o dado esta vazio
-        printf("nao informado ## ");
-    }
-    else {
-        printf("%s ## ", jogadores.universidade);
-    }
+        printf("%d ## ", jogadores[i]->anoNascimento);
 
-    if (!strlen(jogadores.cidadeNascimento)> 0) { // Se o dado esta vazio
-        printf("nao informado ## ");
-    }
-    else {
-        printf("%s ## ", jogadores.cidadeNascimento);
-    }
+        if (strcmp(jogadores[i]->universidade,"")==0) { // Se o dado esta vazio
+            printf("nao informado ## ");
+        }
+        else {
+            printf("%s ## ", jogadores[i]->universidade);
+        }
 
-    if (!strlen(jogadores.estadoNascimento) > 0) { // Se o dado esta vazio
-        printf("nao informado]\n");
-    }
-    else {
-        printf("%s]\n", jogadores.estadoNascimento);
+        if (!strlen(jogadores[i]->cidadeNascimento)> 0) { // Se o dado esta vazio
+            printf("nao informado ## ");
+        }
+        else {
+            printf("%s ## ", jogadores[i]->cidadeNascimento);
+        }
+
+        if (!strlen(jogadores[i]->estadoNascimento) > 0) { // Se o dado esta vazio
+            printf("nao informado]\n");
+        }
+        else {
+            printf("%s]\n", jogadores[i]->estadoNascimento);
+        }
     }
 }
 
-int comparacoes=0, movimentacoes=0;
-
-void selecao(Jogador vetor[], int n, int i, int j, int menor, time_t t_ini) {
+int comparacoes=0;
+int movimentacoes=0;
+void selecao(Jogador **vetor, int n, int i, int j, int menor, time_t t_ini) {
 
     if(i < (n - 1)){
         if(j < n){
-            if( (strlen(vetor[j].cidadeNascimento) != 0 && strlen(vetor[menor].cidadeNascimento) == 0)
-               || (strlen(vetor[j].cidadeNascimento) != 0 && strcmp(vetor[menor].cidadeNascimento, vetor[j].cidadeNascimento) > 0)
-               || (strcmp(vetor[menor].cidadeNascimento, vetor[j].cidadeNascimento) == 0 && strcmp(vetor[menor].nome, vetor[j].nome) > 0) ){
+            if( (strlen(vetor[j]->cidadeNascimento) != 0 && strlen(vetor[menor]->cidadeNascimento) == 0)
+               || (strlen(vetor[j]->cidadeNascimento) != 0 && strcmp(vetor[menor]->cidadeNascimento, vetor[j]->cidadeNascimento) > 0)
+               || (strcmp(vetor[menor]->cidadeNascimento, vetor[j]->cidadeNascimento) == 0 && strcmp(vetor[menor]->nome, vetor[j]->nome) > 0) ){
                 menor = j;
             }
             comparacoes++;
@@ -176,7 +218,7 @@ void selecao(Jogador vetor[], int n, int i, int j, int menor, time_t t_ini) {
         }
         if(j==n){
 
-            Jogador temp = vetor[i];
+            Jogador *temp = vetor[i];
             vetor[i] = vetor[menor];
             vetor[menor] = temp;
             movimentacoes++;
@@ -188,13 +230,10 @@ void selecao(Jogador vetor[], int n, int i, int j, int menor, time_t t_ini) {
     float tempo;
     time_t t_fim;
     t_fim = time(NULL);
-
     tempo = difftime(t_fim, t_ini);
-
     FILE *pont_log;
 
-    pont_log = fopen ("matricula_selecaoRecursiva_C.txt", "wt");
+    pont_log = fopen ("matricula_selecaoRecursiva_C..txt", "wt");
     fprintf (pont_log, "705903,692669,689603 %f %d %d", tempo, comparacoes, movimentacoes);
     fclose (pont_log);
-
 }

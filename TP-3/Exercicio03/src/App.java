@@ -45,32 +45,22 @@ public class App {
 				dadosAcao = acao.split(" ", 2);
 				id = Integer.parseInt(dadosAcao[1].toString());
 				listaJogadores.inserirInicio(listaTodosJogadores.getJogador(id));
-			}
-
-			if (acao.charAt(0) == 'I' && acao.charAt(1) == '*') {
+			} else if (acao.charAt(0) == 'I' && acao.charAt(1) == '*') {
 				dadosAcao = acao.split(" ", 3);
 				id = Integer.parseInt(dadosAcao[2].toString());
 				posicao = Integer.parseInt(dadosAcao[1].toString());
 				listaJogadores.inserir(listaTodosJogadores.getJogador(id), posicao);
-			}
-
-			if (acao.charAt(0) == 'I' && acao.charAt(1) == 'F') {
+			} else if (acao.charAt(0) == 'I' && acao.charAt(1) == 'F') {
 				dadosAcao = acao.split(" ", 2);
 				id = Integer.parseInt(dadosAcao[1].toString());
 				listaJogadores.inserirFim(listaTodosJogadores.getJogador(id));
-			}
-
-			if (acao.charAt(0) == 'R' && acao.charAt(1) == 'I') {
+			} else if (acao.charAt(0) == 'R' && acao.charAt(1) == 'I') {
 				removido[removidos] = listaJogadores.removerInicio();
-			}
-
-			if (acao.charAt(0) == 'R' && acao.charAt(1) == '*') {
+			} else if (acao.charAt(0) == 'R' && acao.charAt(1) == '*') {
 				dadosAcao = acao.split(" ", 2);
 				posicao = Integer.parseInt(dadosAcao[1].toString());
 				removido[removidos] = listaJogadores.remover(posicao);
-			}
-
-			if (acao.charAt(0) == 'R' && acao.charAt(1) == 'F') {
+			} else if (acao.charAt(0) == 'R' && acao.charAt(1) == 'F') {
 				removido[removidos] = listaJogadores.removerFim();
 			}
 

@@ -1,0 +1,7 @@
+# depslib dependency file v1.0
+1603740363 source:c:\users\lcs20\documents\repositorios\aed2-trabalhospraticos\tp-3\exercicio04\main.c
+	<stdio.h>
+	<string.h>
+	<stdlib.h>
+	<time.h>
+

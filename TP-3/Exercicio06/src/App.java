@@ -3,14 +3,10 @@ import java.io.InputStreamReader;
 
 public class App {
 	public static void main(String[] args) throws NumberFormatException, Exception {
-
 		BufferedReader in = new BufferedReader(new InputStreamReader(System.in));
-		ArquivoTextoLeitura leitura = new ArquivoTextoLeitura();
+		Fila filaJogadores = new Fila();
 
-		int qtdJogadores = qtdLinhas(leitura);
-
-		Lista listaTodosJogadores = preencherJogadores(leitura, qtdJogadores); // Lista que salva todos os jogadores
-		Lista listaJogadores = new Lista(qtdJogadores); // Lista preenchida com alguns jogadores
+		Jogador[] players = preencherJogadores();
 
 		String idInformado = new String();
 		do {
@@ -18,64 +14,37 @@ public class App {
 
 			if (!(idInformado.equals("FIM"))) {
 
-				// Captura da lista que possui todos os jogadores, e insere ele na outra lista
-				listaJogadores.inserirFim(listaTodosJogadores.getJogador(Integer.parseInt(idInformado)));
+				filaJogadores.enfileirar(players[Integer.parseInt(idInformado)]);
+				System.out.println(((int) filaJogadores.obterMediaAltura()));
 
 			}
 
 		} while (!(idInformado.equals("FIM")));
 
 		String[] dadosAcao;
+		Jogador desenfilierado = new Jogador();
 
-		int i = 0;
-		int id, posicao;
-
+		int i = 0, id;
 		int qtd = Integer.parseInt(in.readLine());
-
-		int removidos = 0;
-		Jogador removido[] = new Jogador[qtd];
-		for (int z = 0; z < qtd; z++)
-			removido[z] = new Jogador();
 
 		while (i < qtd) {
 
 			String acao = in.readLine();
 
-			if (acao.charAt(0) == 'I' && acao.charAt(1) == 'I') {
+			if (acao.charAt(0) == 'I') {
 				dadosAcao = acao.split(" ", 2);
 				id = Integer.parseInt(dadosAcao[1].toString());
-				listaJogadores.inserirInicio(listaTodosJogadores.getJogador(id));
-			} else if (acao.charAt(0) == 'I' && acao.charAt(1) == '*') {
-				dadosAcao = acao.split(" ", 3);
-				id = Integer.parseInt(dadosAcao[2].toString());
-				posicao = Integer.parseInt(dadosAcao[1].toString());
-				listaJogadores.inserir(listaTodosJogadores.getJogador(id), posicao);
-			} else if (acao.charAt(0) == 'I' && acao.charAt(1) == 'F') {
-				dadosAcao = acao.split(" ", 2);
-				id = Integer.parseInt(dadosAcao[1].toString());
-				listaJogadores.inserirFim(listaTodosJogadores.getJogador(id));
-			} else if (acao.charAt(0) == 'R' && acao.charAt(1) == 'I') {
-				removido[removidos] = listaJogadores.removerInicio();
-			} else if (acao.charAt(0) == 'R' && acao.charAt(1) == '*') {
-				dadosAcao = acao.split(" ", 2);
-				posicao = Integer.parseInt(dadosAcao[1].toString());
-				removido[removidos] = listaJogadores.remover(posicao);
-			} else if (acao.charAt(0) == 'R' && acao.charAt(1) == 'F') {
-				removido[removidos] = listaJogadores.removerFim();
-			}
-
-			if (acao.charAt(0) == 'R') {
-				removidos++;
+				filaJogadores.enfileirar(players[id]);
+				System.out.println(((int) filaJogadores.obterMediaAltura()));
+			} else if (acao.charAt(0) == 'R') {
+				desenfilierado = filaJogadores.desenfileirar();
+				System.out.println("(R) " + desenfilierado.getNome());
 			}
 
 			i++;
 		}
 
-		for (int z = 0; z < removidos; z++) {
-			System.out.println("(R) " + removido[z].getNome());
-		}
-
-		listaJogadores.mostrar();
+		filaJogadores.mostrar();
 
 	}
 
@@ -96,9 +65,14 @@ public class App {
 		return qtd; // Retorna a quantidade de jogadores/Quantidade de linhas
 	}
 
-	public static Lista preencherJogadores(ArquivoTextoLeitura leitura, int qtdJogadores) throws Exception {
+	public static Jogador[] preencherJogadores() throws Exception {
+		ArquivoTextoLeitura leitura = new ArquivoTextoLeitura();
+		int qtdJogadores = qtdLinhas(leitura);
+
 		Jogador atual = new Jogador();
-		Lista listaTodosJogadores = new Lista(qtdJogadores); // Reserva o armazenamento
+		Jogador[] todosJogadores = new Jogador[qtdJogadores];
+		for (int i = 0; i < qtdJogadores; i++)
+			todosJogadores[i] = new Jogador();
 
 		leitura.abrirArquivo("players.csv");
 
@@ -125,13 +99,13 @@ public class App {
 			atual.setCidadeNascimento(dadosDaLinha[6].toString());
 			atual.setEstadoNascimento(dadosDaLinha[7].toString());
 
-			listaTodosJogadores.inserirFim(atual);
+			todosJogadores[i] = atual;
 			atual = new Jogador();
 		}
 
 		leitura.fecharArquivo();
 
-		return listaTodosJogadores;
+		return todosJogadores;
 	}
 
 }

@@ -1,51 +1,55 @@
-import java.io.*;
+import java.io.BufferedReader;
+import java.io.InputStreamReader;
 
 public class App {
-    public static void main(String[] args) throws Exception {
-        
-        BufferedReader in = new BufferedReader(new InputStreamReader(System.in));
-        ArquivoTextoLeitura leitura = new ArquivoTextoLeitura();
+	public static void main(String[] args) throws Exception {
 
-        int qtdJogadores = qtdLinhas(leitura);
+		BufferedReader in = new BufferedReader(new InputStreamReader(System.in));
+		ArquivoTextoLeitura leitura = new ArquivoTextoLeitura();
 
-        Jogador allPlayers[] = preencherJogadores(leitura, qtdJogadores);
-        Pilha stack = new Pilha(qtdJogadores);
-        int id;
+		int qtdJogadores = qtdLinhas(leitura);
 
-        String read;
-        do{
-            read = in.readLine();
+		Jogador allPlayers[] = preencherJogadores(leitura, qtdJogadores);
+		FilaCircular fila = new FilaCircular(5);
+		int id;
 
-            if (!read.equals("FIM")){
-                id = Integer.parseInt(read);
-                stack.empilhar(allPlayers[id]);
-            }
+		String read;
+		do {
+			read = in.readLine();
 
-        }while(!read.equals("FIM"));
+			if (!read.equals("FIM")) {
+				id = Integer.parseInt(read);
+				fila.enfileirar(allPlayers[id]);
+				System.out.println((int) fila.obterMediaAltura());
+			}
 
-        int qtdcomandos = Integer.parseInt(in.readLine());
-        int toStackUpId;
+		} while (!read.equals("FIM"));
 
-        String comando = new String();
-        for (int i=0;i<qtdcomandos;i++){
+		int qtdcomandos = Integer.parseInt(in.readLine());
+		int toStackUpId;
 
-            comando = in.readLine();
+		String comando = new String();
+		for (int i = 0; i < qtdcomandos; i++) {
 
-            if (comando.charAt(0) == 'I'){
+			comando = in.readLine();
 
-                toStackUpId = Integer.parseInt(comando.substring(2, comando.length()));
-                stack.empilhar(allPlayers[toStackUpId]);
-            }
-            else if (comando.charAt(0) == 'R')
-                System.out.println("(R) " + stack.desemplihar().getNome());
-                
-        }
+			if (comando.charAt(0) == 'I') {
 
-        stack.mostrar();
+				toStackUpId = Integer.parseInt(comando.substring(2, comando.length()));
+				fila.enfileirar(allPlayers[toStackUpId]);
 
-    }
+				System.out.println((int) fila.obterMediaAltura());
 
-    public static int qtdLinhas(ArquivoTextoLeitura leitura) {
+			} else if (comando.charAt(0) == 'R')
+				System.out.println("(R) " + fila.desenfileirar().getNome());
+
+		}
+
+		fila.mostrar();
+
+	}
+
+	public static int qtdLinhas(ArquivoTextoLeitura leitura) {
 		int qtd = 0;
 		String linhaLida = new String();
 		leitura.abrirArquivo("players.csv");
@@ -73,7 +77,8 @@ public class App {
 
 			String[] dadosDaLinha = leitura.ler().split(",", 8); // Dividir os dados da linha
 
-			// Caso necessite de remover os asterisco s� tirar o comen�rio das linhas abaixo
+			// Caso necessite de remover os asterisco s� tirar o comen�rio das linhas
+			// abaixo
 			/*
 			 * String nome = dadosDaLinha[1].toString(); char ultima =
 			 * nome.charAt(nome.length()-1);
@@ -91,7 +96,7 @@ public class App {
 			atual.setCidadeNascimento(dadosDaLinha[6].toString());
 			atual.setEstadoNascimento(dadosDaLinha[7].toString());
 
-            listaTodosJogadores[i] = atual.clone();
+			listaTodosJogadores[i] = atual.clone();
 			atual = new Jogador();
 		}
 

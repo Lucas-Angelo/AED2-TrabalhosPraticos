@@ -22,8 +22,7 @@ public class PilhaDinamica {
 		Celula aux; // Criar a celula auxiliar para apontar para onde o topo está, para poder mexer
 					// com o topo
 		Jogador player = null;
-		if (!pilhaVazia()) {
-
+		if (!pilhaVazia()) {// Verificar se a pilha não está vazia
 			aux = topo;
 			topo = topo.proximo;// Apontar para a proxima celula
 			aux.proximo = null; // Tirando o lixo de memoria
@@ -40,6 +39,7 @@ public class PilhaDinamica {
 		else
 			resp = false;
 
+		return resp;
 	}
 
 }

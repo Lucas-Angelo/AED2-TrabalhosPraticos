@@ -1,51 +1,51 @@
-import java.io.*;
+import java.io.BufferedReader;
+import java.io.InputStreamReader;
 
 public class App {
-    public static void main(String[] args) throws Exception {
-        
-        BufferedReader in = new BufferedReader(new InputStreamReader(System.in));
-        ArquivoTextoLeitura leitura = new ArquivoTextoLeitura();
+	public static void main(String[] args) throws NumberFormatException, Exception {
+		BufferedReader in = new BufferedReader(new InputStreamReader(System.in));
+		PilhaDinamica stack = new PilhaDinamica();
 
-        int qtdJogadores = qtdLinhas(leitura);
+		Jogador[] players = preencherJogadores();
 
-        Jogador allPlayers[] = preencherJogadores(leitura, qtdJogadores);
-        Pilha stack = new Pilha(qtdJogadores);
-        int id;
+		String idInformado = new String();
+		do {
+			idInformado = in.readLine(); // Qual jogador deseja procurar
 
-        String read;
-        do{
-            read = in.readLine();
+			if (!(idInformado.equals("FIM"))) {
 
-            if (!read.equals("FIM")){
-                id = Integer.parseInt(read);
-                stack.empilhar(allPlayers[id]);
-            }
+				stack.empilhar(players[Integer.parseInt(idInformado)]);
+			}
 
-        }while(!read.equals("FIM"));
+		} while (!(idInformado.equals("FIM")));
 
-        int qtdcomandos = Integer.parseInt(in.readLine());
-        int toStackUpId;
+		String[] dadosAcao;
+		Jogador desempilhado = new Jogador();
 
-        String comando = new String();
-        for (int i=0;i<qtdcomandos;i++){
+		int i = 0, id;
+		int qtd = Integer.parseInt(in.readLine());
 
-            comando = in.readLine();
+		while (i < qtd) {
 
-            if (comando.charAt(0) == 'I'){
+			String acao = in.readLine();
 
-                toStackUpId = Integer.parseInt(comando.substring(2, comando.length()));
-                stack.empilhar(allPlayers[toStackUpId]);
-            }
-            else if (comando.charAt(0) == 'R')
-                System.out.println("(R) " + stack.desemplihar().getNome());
-                
-        }
+			if (acao.charAt(0) == 'I') {
+				dadosAcao = acao.split(" ", 2);
+				id = Integer.parseInt(dadosAcao[1].toString());
+				stack.empilhar(players[id]);
+			} else if (acao.charAt(0) == 'R') {
+				desempilhado = stack.desempilhar();
+				System.out.println("(R) " + desempilhado.getNome());
+			}
 
-        stack.mostrar();
+			i++;
+		}
 
-    }
+		stack.mostrar();
 
-    public static int qtdLinhas(ArquivoTextoLeitura leitura) {
+	}
+
+	public static int qtdLinhas(ArquivoTextoLeitura leitura) {
 		int qtd = 0;
 		String linhaLida = new String();
 		leitura.abrirArquivo("players.csv");
@@ -62,9 +62,14 @@ public class App {
 		return qtd; // Retorna a quantidade de jogadores/Quantidade de linhas
 	}
 
-	public static Jogador[] preencherJogadores(ArquivoTextoLeitura leitura, int qtdJogadores) throws Exception {
+	public static Jogador[] preencherJogadores() throws Exception {
+		ArquivoTextoLeitura leitura = new ArquivoTextoLeitura();
+		int qtdJogadores = qtdLinhas(leitura);
+
 		Jogador atual = new Jogador();
-		Jogador listaTodosJogadores[] = new Jogador[qtdJogadores]; // Reserva o armazenamento
+		Jogador[] todosJogadores = new Jogador[qtdJogadores];
+		for (int i = 0; i < qtdJogadores; i++)
+			todosJogadores[i] = new Jogador();
 
 		leitura.abrirArquivo("players.csv");
 
@@ -73,7 +78,7 @@ public class App {
 
 			String[] dadosDaLinha = leitura.ler().split(",", 8); // Dividir os dados da linha
 
-			// Caso necessite de remover os asterisco sï¿½ tirar o comenï¿½rio das linhas abaixo
+			// Caso necessite de remover os asterisco só tirar o comenário das linhas abaixo
 			/*
 			 * String nome = dadosDaLinha[1].toString(); char ultima =
 			 * nome.charAt(nome.length()-1);
@@ -91,12 +96,13 @@ public class App {
 			atual.setCidadeNascimento(dadosDaLinha[6].toString());
 			atual.setEstadoNascimento(dadosDaLinha[7].toString());
 
-            listaTodosJogadores[i] = atual.clone();
+			todosJogadores[i] = atual;
 			atual = new Jogador();
 		}
 
 		leitura.fecharArquivo();
 
-		return listaTodosJogadores;
+		return todosJogadores;
 	}
+
 }

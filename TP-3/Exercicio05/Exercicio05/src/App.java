@@ -4,7 +4,7 @@ import java.io.InputStreamReader;
 public class App {
 	public static void main(String[] args) throws NumberFormatException, Exception {
 		BufferedReader in = new BufferedReader(new InputStreamReader(System.in));
-		PilhaDinamica stack = new PilhaDinamica();
+		PilhaDinamica stackDinamica = new PilhaDinamica();
 
 		Jogador[] players = preencherJogadores();
 
@@ -14,7 +14,7 @@ public class App {
 
 			if (!(idInformado.equals("FIM"))) {
 
-				stack.empilhar(players[Integer.parseInt(idInformado)]);
+				stackDinamica.empilhar(players[Integer.parseInt(idInformado)]);
 			}
 
 		} while (!(idInformado.equals("FIM")));
@@ -32,16 +32,16 @@ public class App {
 			if (acao.charAt(0) == 'I') {
 				dadosAcao = acao.split(" ", 2);
 				id = Integer.parseInt(dadosAcao[1].toString());
-				stack.empilhar(players[id]);
+				stackDinamica.empilhar(players[id]);
 			} else if (acao.charAt(0) == 'R') {
-				desempilhado = stack.desempilhar();
+				desempilhado = stackDinamica.desempilhar();
 				System.out.println("(R) " + desempilhado.getNome());
 			}
 
 			i++;
 		}
 
-		stack.mostrar();
+		stackDinamica.mostrar();
 
 	}
 

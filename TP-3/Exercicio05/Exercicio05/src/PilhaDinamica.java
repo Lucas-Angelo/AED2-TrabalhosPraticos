@@ -42,4 +42,49 @@ public class PilhaDinamica {
 		return resp;
 	}
 
+	public void mostrar() {
+
+		int cont = 0;
+		if (!pilhaVazia()) {
+			Celula aux;
+
+			aux = fundo.proximo;
+			while (aux != null) {
+
+				System.out.print("[" + cont + "] ## ");
+
+				System.out.printf("%d ## ", aux.item.getId());
+
+				System.out.printf("%s ## ", aux.item.getNome());
+
+				System.out.printf("%d ## ", aux.item.getAltura());
+
+				System.out.printf("%d ## ", aux.item.getPeso());
+
+				System.out.printf("%d ## ", aux.item.getAnoNascimento());
+
+				if (aux.item.getUniversidade().trim().length() == 0) { // Se o dado esta vazio
+					System.out.printf("nao informado ## ");
+				} else {
+					System.out.printf("%s ## ", aux.item.getUniversidade());
+				}
+
+				if (aux.item.getCidadeNascimento().trim().length() == 0) { // Se o dado esta vazio
+					System.out.printf("nao informado ## ");
+				} else {
+					System.out.printf("%s ## ", aux.item.getCidadeNascimento());
+				}
+
+				if (aux.item.getEstadoNascimento().trim().length() == 0) { // Se o dado esta vazio
+					System.out.printf("nao informado ## \n");
+				} else {
+					System.out.printf("%s ## \n", aux.item.getEstadoNascimento());
+				}
+
+				cont++;
+				aux = aux.proximo;
+			}
+
+		}
+	}
 }

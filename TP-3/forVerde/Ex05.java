@@ -1,9 +1,9 @@
 import java.io.*;
 
-public class Ex06 {
+public class Ex05 {
 	public static void main(String[] args) throws NumberFormatException, Exception {
 		BufferedReader in = new BufferedReader(new InputStreamReader(System.in));
-		Fila filaJogadores = new Fila();
+		PilhaDinamica stackDinamica = new PilhaDinamica();
 
 		Jogador[] players = preencherJogadores();
 
@@ -13,15 +13,13 @@ public class Ex06 {
 
 			if (!(idInformado.equals("FIM"))) {
 
-				filaJogadores.enfileirar(players[Integer.parseInt(idInformado)]);
-				System.out.println(((int) filaJogadores.obterMediaAltura()));
-
+				stackDinamica.empilhar(players[Integer.parseInt(idInformado)]);
 			}
 
 		} while (!(idInformado.equals("FIM")));
 
 		String[] dadosAcao;
-		Jogador desenfilierado = new Jogador();
+		Jogador desempilhado = new Jogador();
 
 		int i = 0, id;
 		int qtd = Integer.parseInt(in.readLine());
@@ -33,17 +31,16 @@ public class Ex06 {
 			if (acao.charAt(0) == 'I') {
 				dadosAcao = acao.split(" ", 2);
 				id = Integer.parseInt(dadosAcao[1].toString());
-				filaJogadores.enfileirar(players[id]);
-				System.out.println(((int) filaJogadores.obterMediaAltura()));
+				stackDinamica.empilhar(players[id]);
 			} else if (acao.charAt(0) == 'R') {
-				desenfilierado = filaJogadores.desenfileirar();
-				System.out.println("(R) " + desenfilierado.getNome());
+				desempilhado = stackDinamica.desempilhar();
+				System.out.println("(R) " + desempilhado.getNome());
 			}
 
 			i++;
 		}
 
-		filaJogadores.mostrar();
+		stackDinamica.mostrar();
 
 	}
 
@@ -109,6 +106,44 @@ public class Ex06 {
 
 }
 
+class ArquivoTextoLeitura {
+
+	private BufferedReader entrada;
+
+	public void abrirArquivo(String nomeArquivo) {
+
+		try {
+			entrada = new BufferedReader(new FileReader(nomeArquivo));
+		} catch (FileNotFoundException excecao) {
+			System.out.println("Arquivo nÃ£o encontrado");
+		}
+	}
+
+	public void fecharArquivo() {
+
+		try {
+			entrada.close();
+		} catch (IOException excecao) {
+			System.out.println("Erro no fechamento do arquivo de leitura: " + excecao);
+		}
+	}
+
+	public String ler() {
+
+		String textoEntrada;
+
+		try {
+			textoEntrada = entrada.readLine();
+		} catch (EOFException excecao) { // ExceÃ§Ã£o de final de arquivo.
+			return null;
+		} catch (IOException excecao) {
+			System.out.println("Erro de leitura: " + excecao);
+			return null;
+		}
+		return textoEntrada;
+	}
+}
+
 class Jogador {
 
 	private int id;
@@ -136,7 +171,7 @@ class Jogador {
 		this.estadoNascimento = estadoNascimento;
 	}
 
-	// Início GETS
+	// Inï¿½cio GETS
 	public int getId() {
 		return this.id;
 	}
@@ -170,7 +205,7 @@ class Jogador {
 	}
 	// Fim GETS
 
-	// Início SETS
+	// Inï¿½cio SETS
 	public void setId(int id) {
 		this.id = id;
 	}
@@ -221,7 +256,7 @@ class Jogador {
 
 	public void imprimir() {
 
-		System.out.printf("[%d ## ", this.id);
+		System.out.printf("## %d ## ", this.id);
 
 		System.out.printf("%s ## ", this.nome);
 
@@ -244,9 +279,9 @@ class Jogador {
 		}
 
 		if (this.estadoNascimento.trim().length() == 0) { // Se o dado esta vazio
-			System.out.printf("nao informado]\n");
+			System.out.printf("nao informado ##\n");
 		} else {
-			System.out.printf("%s]\n", this.estadoNascimento);
+			System.out.printf("%s ##\n", this.estadoNascimento);
 		}
 
 	}
@@ -255,205 +290,118 @@ class Jogador {
 
 class Celula {
 
-	private Jogador item; // Dados do jogador
-	private Celula proximo; // Apontar da frente ate atras na fila
+	Jogador item; // Dados do jogador
+	Celula proximo; // Apontar da frente ate atras na fila
 
-	public Celula() { // Sentinela
+	public Celula() { // Sentinela, não fala o item que vai colocar na célula
 		this.item = new Jogador();
 		proximo = null;
 	}
 
-	public Celula(Jogador player) { // Preencher
+	public Celula(Jogador player) { // Preencher, o que têm que colocar na célula
 		this.item = player;
 		proximo = null;
 	}
 
 }
 
-class Fila {
+class PilhaDinamica {
 
-	private Celula frente;
-	private Celula tras;
-	private int filaTamanho;
+	private Celula fundo; // Tipo célula e guardam o endereço de memória onde se encontra uma célula,
+							// endereço onde está o fundo da pilha
+	private Celula topo; // Endereço no topo
 
-	public Fila() {
-		Celula sentinela;
+	public PilhaDinamica() { // Criar pilha vazia, criar fundo e topo apontando p/ Sentinela
 
-		sentinela = new Celula();
-		frente = sentinela;
-		tras = sentinela;
-		filaTamanho = 0;
+		Celula sentinela = new Celula(); // Criando a nova celula
+		fundo = topo = sentinela; // Fundo e topo apontando para sentinela
 	}
 
-	public boolean filaVazia() {
+	public void empilhar(Jogador novo) {
 
-		boolean resp;
+		Celula aux = new Celula();
+		aux.proximo = topo;
+		aux.item = novo;
 
-		if (frente == tras)
-			resp = true;
-		else
-			resp = false;
-
-		return resp;
+		// atualizaÃ§Ã£o do atributo de controle topo.
+		topo = aux;
 	}
 
-	public boolean filaCheia() {
-		boolean resp;
+	public Jogador desempilhar() {
 
-		if (filaTamanho == 5)
-			resp = true;
-		else
-			resp = false;
-
-		return resp;
-	}
-
-	public void enfileirar(Jogador novo) {
-
-		Celula novaCelula;
-
-		if (!filaCheia()) {
-
-			novaCelula = new Celula(novo);
-			tras.proximo = novaCelula;
-			tras = novaCelula; // ou: tras = tras.proximo;
-			filaTamanho++;
-
-		} else {
-
-			desenfileirar();
-
-			novaCelula = new Celula(novo);
-			tras.proximo = novaCelula;
-			tras = novaCelula; // ou: tras = tras.proximo;
-			filaTamanho++;
-
+		Celula aux; // Criar a celula auxiliar para apontar para onde o topo está, para poder mexer
+					// com o topo
+		Jogador player = null;
+		if (!pilhaVazia()) {// Verificar se a pilha não está vazia
+			aux = topo;
+			topo = topo.proximo;// Apontar para a proxima celula
+			aux.proximo = null; // Tirando o lixo de memoria
+			player = aux.item;
 		}
-
+		return player; // Retornando o item
 	}
 
-	public Jogador desenfileirar() {
+	public boolean pilhaVazia() {// fundo e topo apontando para o mesmo lugar
 
-		Celula aux;
+		boolean resp;
+		if (fundo == topo)
+			resp = true;
+		else
+			resp = false;
 
-		aux = frente.proximo; // Na frente da sentinela
-		frente.proximo = aux.proximo; // Sentinela pula uma celula no apontamento
-		aux.proximo = null; // Anula celula desenfileirada
-
-		if (aux == tras)
-			tras = frente;
-
-		filaTamanho--;
-
-		return (aux.item);
+		return resp;
 	}
 
 	public void mostrar() {
 
+		Celula aux;
 		int cont = 0;
-		if (!filaVazia()) {
-			Celula aux;
 
-			aux = frente.proximo;
-			while (aux != null) {
+		PilhaDinamica invertida = new PilhaDinamica();
 
-				System.out.print("[" + cont + "] ## ");
+		aux = topo;
+		while (aux != fundo) {
+			invertida.empilhar(aux.item);
+			aux = aux.proximo;
+		}
 
-				System.out.printf("%d ## ", aux.item.getId());
+		aux = invertida.topo;
+		while (aux != invertida.fundo) {
 
-				System.out.printf("%s ## ", aux.item.getNome());
+			System.out.print("[" + cont + "] ## ");
 
-				System.out.printf("%d ## ", aux.item.getAltura());
+			System.out.printf("%d ## ", aux.item.getId());
 
-				System.out.printf("%d ## ", aux.item.getPeso());
+			System.out.printf("%s ## ", aux.item.getNome());
 
-				System.out.printf("%d ## ", aux.item.getAnoNascimento());
+			System.out.printf("%d ## ", aux.item.getAltura());
 
-				if (aux.item.getUniversidade().trim().length() == 0) { // Se o dado esta vazio
-					System.out.printf("nao informado ## ");
-				} else {
-					System.out.printf("%s ## ", aux.item.getUniversidade());
-				}
+			System.out.printf("%d ## ", aux.item.getPeso());
 
-				if (aux.item.getCidadeNascimento().trim().length() == 0) { // Se o dado esta vazio
-					System.out.printf("nao informado ## ");
-				} else {
-					System.out.printf("%s ## ", aux.item.getCidadeNascimento());
-				}
+			System.out.printf("%d ## ", aux.item.getAnoNascimento());
 
-				if (aux.item.getEstadoNascimento().trim().length() == 0) { // Se o dado esta vazio
-					System.out.printf("nao informado ## \n");
-				} else {
-					System.out.printf("%s ## \n", aux.item.getEstadoNascimento());
-				}
-
-				cont++;
-				aux = aux.proximo;
+			if (aux.item.getUniversidade().trim().length() == 0) { // Se o dado esta vazio
+				System.out.printf("nao informado ## ");
+			} else {
+				System.out.printf("%s ## ", aux.item.getUniversidade());
 			}
 
-		}
-	}
-
-	public double obterMediaAltura() {
-		double media;
-
-		int cont = 0;
-		double somatorio = 0.0;
-		if (!filaVazia()) {
-			Celula aux;
-
-			aux = frente.proximo;
-			while (aux != null) {
-
-				somatorio += aux.item.getAltura();
-
-				cont++;
-				aux = aux.proximo;
+			if (aux.item.getCidadeNascimento().trim().length() == 0) { // Se o dado esta vazio
+				System.out.printf("nao informado ## ");
+			} else {
+				System.out.printf("%s ## ", aux.item.getCidadeNascimento());
 			}
+
+			if (aux.item.getEstadoNascimento().trim().length() == 0) { // Se o dado esta vazio
+				System.out.printf("nao informado ## \n");
+			} else {
+				System.out.printf("%s ## \n", aux.item.getEstadoNascimento());
+			}
+
+			cont++;
+			aux = aux.proximo;
 		}
-		media = somatorio / cont;
 
-		return Math.round(media);
-	}
-
-}
-
-class ArquivoTextoLeitura {
-
-	private BufferedReader entrada;
-
-	public void abrirArquivo(String nomeArquivo) {
-
-		try {
-			entrada = new BufferedReader(new FileReader(nomeArquivo));
-		} catch (FileNotFoundException excecao) {
-			System.out.println("Arquivo nÃ£o encontrado");
-		}
-	}
-
-	public void fecharArquivo() {
-
-		try {
-			entrada.close();
-		} catch (IOException excecao) {
-			System.out.println("Erro no fechamento do arquivo de leitura: " + excecao);
-		}
-	}
-
-	public String ler() {
-
-		String textoEntrada;
-
-		try {
-			textoEntrada = entrada.readLine();
-		} catch (EOFException excecao) { // ExceÃ§Ã£o de final de arquivo.
-			return null;
-		} catch (IOException excecao) {
-			System.out.println("Erro de leitura: " + excecao);
-			return null;
-		}
-		return textoEntrada;
 	}
 }
-
 

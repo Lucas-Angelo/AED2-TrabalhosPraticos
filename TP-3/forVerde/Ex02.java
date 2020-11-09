@@ -256,13 +256,13 @@ class FilaCircular {
 	private int tras;
 	private Jogador fila[];
 
-	FilaCircular() {
+	public FilaCircular() {
 		this.tamanho = 5;
 		this.frente = this.tras = -1;
 		this.fila = new Jogador[5];
 	}
 
-	FilaCircular(int tamanho) {
+	public FilaCircular(int tamanho) {
 		this.tamanho = tamanho;
 		this.frente = this.tras = -1;
 		this.fila = new Jogador[tamanho];

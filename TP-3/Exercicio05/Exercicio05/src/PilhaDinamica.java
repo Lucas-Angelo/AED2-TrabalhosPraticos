@@ -12,9 +12,12 @@ public class PilhaDinamica {
 
 	public void empilhar(Jogador novo) {
 
-		Celula novaCelula = new Celula(novo); // Criando a nova celula com o item la dentro
-		novaCelula.proximo = topo;// Encadeamento com a célula anterior
-		topo = novaCelula;// Apontando o topo para a nova célula
+		Celula aux = new Celula();
+		aux.proximo = topo;
+		aux.item = novo;
+
+		// atualizaÃ§Ã£o do atributo de controle topo.
+		topo = aux;
 	}
 
 	public Jogador desempilhar() {
@@ -44,47 +47,53 @@ public class PilhaDinamica {
 
 	public void mostrar() {
 
+		Celula aux;
 		int cont = 0;
-		if (!pilhaVazia()) {
-			Celula aux;
 
-			aux = fundo.proximo;
-			while (aux != null) {
+		PilhaDinamica invertida = new PilhaDinamica();
 
-				System.out.print("[" + cont + "] ## ");
+		aux = topo;
+		while (aux != fundo) {
+			invertida.empilhar(aux.item);
+			aux = aux.proximo;
+		}
 
-				System.out.printf("%d ## ", aux.item.getId());
+		aux = invertida.topo;
+		while (aux != invertida.fundo) {
 
-				System.out.printf("%s ## ", aux.item.getNome());
+			System.out.print("[" + cont + "] ## ");
 
-				System.out.printf("%d ## ", aux.item.getAltura());
+			System.out.printf("%d ## ", aux.item.getId());
 
-				System.out.printf("%d ## ", aux.item.getPeso());
+			System.out.printf("%s ## ", aux.item.getNome());
 
-				System.out.printf("%d ## ", aux.item.getAnoNascimento());
+			System.out.printf("%d ## ", aux.item.getAltura());
 
-				if (aux.item.getUniversidade().trim().length() == 0) { // Se o dado esta vazio
-					System.out.printf("nao informado ## ");
-				} else {
-					System.out.printf("%s ## ", aux.item.getUniversidade());
-				}
+			System.out.printf("%d ## ", aux.item.getPeso());
 
-				if (aux.item.getCidadeNascimento().trim().length() == 0) { // Se o dado esta vazio
-					System.out.printf("nao informado ## ");
-				} else {
-					System.out.printf("%s ## ", aux.item.getCidadeNascimento());
-				}
+			System.out.printf("%d ## ", aux.item.getAnoNascimento());
 
-				if (aux.item.getEstadoNascimento().trim().length() == 0) { // Se o dado esta vazio
-					System.out.printf("nao informado ## \n");
-				} else {
-					System.out.printf("%s ## \n", aux.item.getEstadoNascimento());
-				}
-
-				cont++;
-				aux = aux.proximo;
+			if (aux.item.getUniversidade().trim().length() == 0) { // Se o dado esta vazio
+				System.out.printf("nao informado ## ");
+			} else {
+				System.out.printf("%s ## ", aux.item.getUniversidade());
 			}
 
+			if (aux.item.getCidadeNascimento().trim().length() == 0) { // Se o dado esta vazio
+				System.out.printf("nao informado ## ");
+			} else {
+				System.out.printf("%s ## ", aux.item.getCidadeNascimento());
+			}
+
+			if (aux.item.getEstadoNascimento().trim().length() == 0) { // Se o dado esta vazio
+				System.out.printf("nao informado ## \n");
+			} else {
+				System.out.printf("%s ## \n", aux.item.getEstadoNascimento());
+			}
+
+			cont++;
+			aux = aux.proximo;
 		}
+
 	}
 }

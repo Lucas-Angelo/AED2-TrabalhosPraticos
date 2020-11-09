@@ -140,7 +140,7 @@ class Lista {
     private Celula primeiro;
     private Celula ultimo;
 
-    Lista (){
+    public Lista (){
         primeiro = new Celula();
         ultimo = primeiro;
         tamanho=0;

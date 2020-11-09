@@ -39,19 +39,14 @@ public class App {
 
 		qtdJogadoresVetor = i; // Agora ja se sabe quantos jogadores existem nesse vetor
 
-		long inicio = System.currentTimeMillis(); // Para o log
-		Quick ordenar = new Quick(); // Objeto da classe que possui o metodo de
-		// ordenar
-
-		lista = ordenar.sort(lista, qtdJogadoresVetor); // Vetor recebe de jogadores
-		// recebe ele mesmo ordenado por nome
+		long inicio = System.currentTimeMillis();
+		lista.quickSort();
+		long fim = System.currentTimeMillis();
 
 		lista.imprimir();
 
-		comparacoes = ordenar.getComparacoes();
-		movimentacoes = ordenar.getMovimentacoes();
-
-		long fim = System.currentTimeMillis();
+		comparacoes = lista.getComparacoes();
+		movimentacoes = lista.getMovimentacoes();
 		gerarLog(inicio, fim, comparacoes, movimentacoes);
 
 	}
@@ -123,96 +118,6 @@ public class App {
 		leitura.fecharArquivo();
 
 		return players;
-	}
-
-}
-
-class Quick {
-
-	/**
-	 * @param args
-	 */
-
-	private int comparacoes = 0;
-	private int movimentacoes = 0;
-
-	public ListaJogador sort(ListaJogador lista, int n) { // Metodo para chmar ordenacao privada
-		int left = 0, rigth = n - 1;
-		return method(lista, left, rigth);
-	}
-
-	private ListaJogador method(ListaJogador lista, int left, int rigth) { // Metodo que retorna o vetor jogadores
-																			// ordenado
-																			// por estado
-		int pivot;
-		pivot = orderbyPivot(lista, left, rigth);
-		if (pivot != left)
-			method(lista, left, pivot - 1);
-		if (pivot != rigth)
-			method(lista, pivot + 1, rigth);
-		return lista;
-	}
-
-	private int orderbyPivot(ListaJogador lista, int left, int rigth) {
-
-		int i, j, k, n1 = 0;
-		boolean is1Empty, isPivotEmpty, isFirstLesser, areEqual, isFirstsNameLesser;
-
-		// descobrindo tamanho dos subveores
-		int maxsize = rigth - left;
-
-		// criando subvetores
-		ListaJogador maiores = new ListaJogador();
-		ListaJogador menores = new ListaJogador();
-
-		Jogador playerPivot = new Jogador();
-		playerPivot = lista[left].clone();
-		// Montando dois vetores
-		for (i = 0, j = 0, k = left + 1; k <= rigth; k++) {
-
-			is1Empty = lista[k].getEstadoNascimento().trim().length() == 0;
-			isPivotEmpty = playerPivot.getEstadoNascimento().trim().length() == 0;
-			isFirstLesser = lista[k].getEstadoNascimento().compareTo(playerPivot.getEstadoNascimento()) < 0;
-			areEqual = lista[k].getEstadoNascimento().compareTo(playerPivot.getEstadoNascimento()) == 0;
-			isFirstsNameLesser = lista[k].getNome().compareTo(playerPivot.getNome()) < 0;
-
-			if ((!is1Empty && isPivotEmpty) || (!is1Empty && isFirstLesser) || (areEqual && isFirstsNameLesser)) {
-				menores[i] = new Jogador();
-				menores[i++] = lista[k].clone();
-			} else {
-				maiores[j] = new Jogador();
-				maiores[j++] = lista[k].clone();
-			}
-
-			this.comparacoes++;
-		}
-		n1 = i;
-
-		// Juntando subvetores
-		for (k = left; k < n1 + left; k++) {
-			lista[k] = menores[k - left].clone();
-			this.movimentacoes++;
-		}
-
-		int pivot = k;
-		lista[k++] = playerPivot.clone();
-		this.movimentacoes++;
-
-		for (; k <= rigth; k++) {
-			lista[k] = maiores[k - n1 - left - 1].clone();
-			this.movimentacoes++;
-		}
-
-		return pivot;
-
-	}
-
-	public int getComparacoes() {
-		return this.comparacoes;
-	}
-
-	public int getMovimentacoes() {
-		return this.movimentacoes;
 	}
 
 }

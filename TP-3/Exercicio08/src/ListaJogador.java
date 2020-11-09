@@ -3,11 +3,13 @@ public class ListaJogador {
 	private Celula primeiro;
 	private Celula ultimo;
 	private int tamanho;
+	private int comparacoes;
+	private int movimentacoes;
 
 	public ListaJogador() {
 		Celula sentinela = new Celula();
 		primeiro = ultimo = sentinela;
-		tamanho = 0;
+		tamanho = comparacoes = movimentacoes = 0;
 	}
 
 	public void inserirFinal(Jogador novo) throws Exception {
@@ -108,30 +110,62 @@ public class ListaJogador {
 		return copia;
 	}
 
-	public void concaternar(ListaJogador lista2) {
+	public int getMovimentacoes() {
+		return movimentacoes;
+	}
 
-		ListaJogador nova = new ListaJogador();
-		Celula auxNova;
+	public int getComparacoes() {
+		return comparacoes;
+	}
 
-		nova.primeiro = primeiro;
-		nova.ultimo = ultimo;
-		nova.ultimo.proximo = lista2.primeiro.proximo;
-		nova.ultimo = lista2.ultimo;
+	private Celula partition(Celula esquerda, Celula direita) {
+		// Capturar o pivo, sendo o ultimo da esquerda para direita
+		Jogador playerPivot = direita.item;
 
-		int cont = 0;
-		auxNova = nova.primeiro.proximo;
-		while (auxNova != null) {
+		Celula i = esquerda.anterior;
 
-			cont++;
+		// Comeca na esquerda e vai andando a parte da lista ate chegar na direita
+		for (Celula j = esquerda; j != direita; j = j.proximo) {
 
-			auxNova = auxNova.proximo;
+			// Todas as condicoes de cidade e nome
+			if ((!(j.item.getEstadoNascimento().trim().length() == 0)
+					&& (playerPivot.getEstadoNascimento().trim().length() == 0))
+					|| (!(j.item.getEstadoNascimento().trim().length() == 0)
+							&& (j.item.getEstadoNascimento().compareTo(playerPivot.getEstadoNascimento()) < 0))
+					|| ((j.item.getEstadoNascimento().compareTo(playerPivot.getEstadoNascimento()) == 0)
+							&& (j.item.getNome().compareTo(playerPivot.getNome()) < 0))) {
+				// Para ir pra frente
+				i = (i == null) ? esquerda : i.proximo; // Se o i for null pega a esquerda, caso nao pega o proximo dele
+				Jogador temp = i.item; // Altera
+				i.item = j.item;
+				j.item = temp;
+				movimentacoes++;
+				comparacoes++;
+			}
+
 		}
+		i = (i == null) ? esquerda : i.proximo; // Se o i for null pega a esquerda, caso nao pega o proximo dele
+		Jogador temp = i.item;
+		i.item = direita.item;
+		direita.item = temp;
+		movimentacoes++;
+		return i;
+	}
 
-		nova.tamanho = cont;
+	/* A implementacao recursiva do quicksort na lista duplamente encadeada */
+	private void _quickSort(Celula esquerda, Celula direita) {
+		if (direita != null && esquerda != direita && esquerda != direita.proximo) {
+			Celula temp = partition(esquerda, direita);
+			_quickSort(esquerda, temp.anterior);
+			_quickSort(temp.proximo, direita);
+		}
+	}
 
-		primeiro = nova.primeiro;
-		tamanho = cont;
-
+	// A funcao que sera chamada na main
+	public void quickSort() {
+		// Chamar a funcao recursiva passando o inicio da lista e o fim (Depois vira
+		// esquerda e direita)
+		_quickSort(primeiro.proximo, ultimo); // Tem que comecar do proximo do primeiro, pois o primeiro e a sentinela
 	}
 
 }

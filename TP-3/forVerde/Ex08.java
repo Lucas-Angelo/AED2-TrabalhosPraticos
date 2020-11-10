@@ -334,9 +334,9 @@ class Jogador {
 
 class Celula {
 
-	private Jogador item;
-	private Celula anterior;
-	private Celula proximo;
+	Jogador item;
+	Celula anterior;
+	Celula proximo;
 
 	public Celula(Jogador novo) {
 		this.item = novo;

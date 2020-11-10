@@ -255,8 +255,8 @@ class Jogador {
 
 class Celula {
 
-	private Jogador item; // Dados do jogador
-	private Celula proximo; // Apontar da frente ate atras na fila
+	Jogador item; // Dados do jogador
+	Celula proximo; // Apontar da frente ate atras na fila
 
 	public Celula() { // Sentinela
 		this.item = new Jogador();

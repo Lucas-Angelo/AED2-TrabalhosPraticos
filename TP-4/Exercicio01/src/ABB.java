@@ -52,7 +52,7 @@ public class ABB {
 				else
 					/// O número de matrícula do aluno armazenado na raiz da árvore é igual ao
 					/// número de matrícula do aluno que deveria ser inserido na árvore.
-					System.out.println("O aluno " + jogadorNovo.getNome() + ", cuja matricula e " + jogadorNovo.getId()
+					System.out.println("O jogador " + jogadorNovo.getNome() + ", cuja id e " + jogadorNovo.getId()
 							+ ", ja foi inserido anteriormente na arvore.");
 			}
 		}

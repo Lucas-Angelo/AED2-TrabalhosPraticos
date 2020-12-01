@@ -4,6 +4,11 @@ import java.io.InputStreamReader;
 
 public class App {
 
+	/*
+	 * Considerações: 1- Deixamos comentado um código para caso for necessário
+	 * remover o asterisco do nome do jogador.
+	 */
+
 	public static void main(String[] args) throws IOException {
 
 		BufferedReader in = new BufferedReader(new InputStreamReader(System.in));
@@ -17,7 +22,7 @@ public class App {
 		Jogador[] players = preencherVetorJogador(leitura, qtdJogadores); // Primeiro preencher o vetor com os dados da
 																			// tabela
 
-		ABB arvore = new ABB();
+		ABBavl arvore = new ABBavl();
 
 		do {
 			idInformado = in.readLine(); // Qual jogador deseja procurar

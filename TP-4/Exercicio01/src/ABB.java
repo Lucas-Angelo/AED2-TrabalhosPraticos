@@ -217,7 +217,7 @@ public class ABB {
 
 	}
 
-	public Jogador menorNumeroMatricula() {
+	public Jogador menorId() {
 		Jogador menor = null;
 
 		if (!arvoreVazia())

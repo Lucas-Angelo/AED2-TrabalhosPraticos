@@ -63,7 +63,7 @@ public class ABB {
 
 	/// Metodo que encapsula a adição recursiva de alunos à árvore.
 	/// Parâmetro "alunoNovo": aluno que deverá ser inserido na árvore.
-	public void inserir(Jogador alunoNovo) {
+	public void inserir(Jogador jogadorNovo) {
 		/// Chama o método recursivo "adicionar", que será responsável por adicionar,
 		/// o aluno passado como parâmetro, à árvore.
 		/// O método "adicionar" receberá, como primeiro parâmetro, a raiz atual da
@@ -71,7 +71,7 @@ public class ABB {
 		/// árvore.
 		/// Por fim, a raiz atual da árvore é atualizada, com a raiz retornada pelo
 		/// método "adicionar".
-		this.raiz = adicionar(this.raiz, alunoNovo);
+		this.raiz = adicionar(this.raiz, jogadorNovo);
 	}
 
 	/// Método recursivo responsável por localizar na árvore ou sub-árvore o

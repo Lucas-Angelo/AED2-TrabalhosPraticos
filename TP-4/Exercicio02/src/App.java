@@ -36,7 +36,7 @@ public class App {
 
 			if (!(nome.equals("FIM"))) {
 
-				if (arvore.buscar(Integer.parseInt(nome)) == -1)
+				if (arvore.buscar(nome) == null)
 					System.out.print("NAO\n");
 				else
 					System.out.print("SIM\n");

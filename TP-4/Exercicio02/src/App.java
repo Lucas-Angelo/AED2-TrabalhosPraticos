@@ -17,7 +17,7 @@ public class App {
 		Jogador[] players = preencherVetorJogador(leitura, qtdJogadores); // Primeiro preencher o vetor com os dados da
 																			// tabela
 
-		ABB arvore = new ABB();
+		ABBum arvore = new ABBum();
 
 		do {
 			idInformado = in.readLine(); // Qual jogador deseja procurar

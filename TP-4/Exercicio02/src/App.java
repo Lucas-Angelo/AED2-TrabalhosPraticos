@@ -17,7 +17,7 @@ public class App {
 		Jogador[] players = preencherVetorJogador(leitura, qtdJogadores); // Primeiro preencher o vetor com os dados da
 																			// tabela
 
-		ABBum arvore = new ABBum();
+		ATB arvore = new ATB();
 
 		do {
 			idInformado = in.readLine(); // Qual jogador deseja procurar
@@ -31,12 +31,18 @@ public class App {
 		} while (!(idInformado.equals("FIM")));
 
 		String nome;
+		Jogador buscado;
 		do {
 			nome = in.readLine(); // Qual jogador deseja procurar
 
 			if (!(nome.equals("FIM"))) {
 
-				if (arvore.buscar(nome) == null)
+				buscado = null;
+				for (int i = 0; i < players.length && buscado == null ; i++)
+					if (players[i].getNome().equals(nome))
+						buscado = players[i];
+
+				if (arvore.buscar(buscado) == null)
 					System.out.print("NAO\n");
 				else
 					System.out.print("SIM\n");
@@ -77,7 +83,7 @@ public class App {
 
 			String[] dadosDaLinha = leitura.ler().split(",", 8); // Dividir os dados da linha
 
-			// Caso necessite de remover os asterisco só tirar o comenário das linhas abaixo
+			// Caso necessite de remover os asterisco sï¿½ tirar o comenï¿½rio das linhas abaixo
 			/*
 			 * String nome = dadosDaLinha[1].toString(); char ultima =
 			 * nome.charAt(nome.length()-1);

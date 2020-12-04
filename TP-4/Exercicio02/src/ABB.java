@@ -1,8 +1,8 @@
-public class ABBdois {
+public class ABB {
 
-	private NodoString raiz;
+	private NodoABB raiz;
 
-	public ABBdois() {
+	public ABB() {
 		raiz = null;
 	}
 
@@ -13,14 +13,14 @@ public class ABBdois {
 			return false;
 	}
 
-	private NodoString adicionar(NodoString raizArvore, Jogador jogadorNovo) {
+	private NodoABB adicionar(NodoABB raizArvore, Jogador jogadorNovo) {
 		if (raizArvore == null)
-			raizArvore = new NodoString(jogadorNovo);
+			raizArvore = new NodoABB(jogadorNovo);
 		else {
-			if ((raizArvore.chaveNome).compareTo(jogadorNovo.getNome()) > 0)
+			if ((raizArvore.chave).compareTo(jogadorNovo.getNome()) > 0)
 				raizArvore.esquerda = adicionar(raizArvore.esquerda, jogadorNovo);
 			else {
-				if ((raizArvore.chaveNome).compareTo(jogadorNovo.getNome()) < 0)
+				if ((raizArvore.chave).compareTo(jogadorNovo.getNome()) < 0)
 					raizArvore.direita = adicionar(raizArvore.direita, jogadorNovo);
 				else
 					System.out.println("O jogador " + jogadorNovo.getNome() + ", cuja id e " + jogadorNovo.getId()
@@ -37,7 +37,7 @@ public class ABBdois {
 	public Jogador buscar(String nomePesquisado) {
 		Jogador pesquisado;
 
-		NodoString resultado = pesquisar(raiz, nomePesquisado);
+		NodoABB resultado = pesquisar(raiz, nomePesquisado);
 
 		if (resultado == null)
 			pesquisado = null;
@@ -47,21 +47,19 @@ public class ABBdois {
 		return pesquisado;
 	}
 
-	private NodoString pesquisar(NodoString raizArvore, String nomePesquisado) {
+	private NodoABB pesquisar(NodoABB raizArvore, String nomePesquisado) {
 
-		NodoString pesquisado;
+		NodoABB pesquisado;
 
 		if (raizArvore == null)
 			pesquisado = null;
 		else {
-			if (raizArvore.chaveNome.equals(nomePesquisado)) {
-				System.out.print(raizArvore.chaveNome + " ");
+			System.out.print(raizArvore.chave + " ");
+			if (raizArvore.chave.equals(nomePesquisado)) {
 				pesquisado = raizArvore;
-			} else if ((raizArvore.chaveNome).compareTo(nomePesquisado) > 0) {
-				System.out.print(raizArvore.chaveNome + " ");
+			} else if ((raizArvore.chave).compareTo(nomePesquisado) > 0) {
 				pesquisado = pesquisar(raizArvore.esquerda, nomePesquisado);
 			} else {
-				System.out.print(raizArvore.chaveNome + " ");
 				pesquisado = pesquisar(raizArvore.direita, nomePesquisado);
 			}
 		}

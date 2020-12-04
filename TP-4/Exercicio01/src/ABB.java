@@ -1,11 +1,13 @@
 public class ABB {
 
 	private NodoJogador raiz; // referência à raiz da árvore.
+	private int comparacoes;
 
 	/// Construtor da classe.
 	/// Esse construtor cria uma nova árvore binária de alunos vazia. Para isso,
 	/// esse método atribui null à raiz da árvore.
 	public ABB() {
+		this.comparacoes = 0;
 		raiz = null;
 	}
 
@@ -254,6 +256,7 @@ public class ABB {
 	private NodoJogador pesquisar(NodoJogador raizArvore, String nomePesquisado) {
 
 		NodoJogador pesquisado;
+		this.comparacoes++;
 
 		if (raizArvore == null)
 			pesquisado = null;
@@ -283,6 +286,10 @@ public class ABB {
 			return 0;
 		else
 			return 1 + contarNumJogadores(raizArvore.esquerda) + contarNumJogadores(raizArvore.direita);
+	}
+
+	public int getComparacoes() {
+		return this.comparacoes;
 	}
 
 }

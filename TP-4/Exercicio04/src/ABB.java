@@ -1,8 +1,10 @@
 public class ABB {
 
 	private NodoJogador raiz;
+	private int comparacoes;
 
 	public ABB() {
+		this.comparacoes = 0;
 		raiz = null;
 	}
 
@@ -27,6 +29,7 @@ public class ABB {
 
 	private NodoJogador adicionar(NodoJogador raizArvore, Jogador novo) {
 
+		this.comparacoes++;
 		// Achou
 		if (raizArvore == null) {
 			raizArvore = new NodoJogador(novo);
@@ -180,6 +183,10 @@ public class ABB {
 			return 0;
 		else
 			return 1 + contarNumJogadores(raizArvore.esquerda) + contarNumJogadores(raizArvore.direita);
+	}
+
+	public int getComparacoes() {
+		return this.comparacoes;
 	}
 
 }

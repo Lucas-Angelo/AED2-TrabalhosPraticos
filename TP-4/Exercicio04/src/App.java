@@ -16,10 +16,28 @@ public class App {
 
 		ABB arvore = new ABB();
 
+		long inicio = System.currentTimeMillis(); // Para o log
+
 		arvore.inserirTodosJogadores(players);
+
+		long fim = System.currentTimeMillis();
 
 		arvore.imprimirOrdenado();
 
+		int comparacoes = arvore.getComparacoes();
+		gerarLog(inicio, fim, comparacoes);
+
+	}
+
+	public static void gerarLog(long inicio, long fim, int comparacoes) {
+		long mili = fim - inicio;
+
+		ArquivoTextoEscrita escrita = new ArquivoTextoEscrita();
+		String log = new String("705903,692669,689603\t" + mili + "\t" + comparacoes);
+
+		escrita.abrirArquivo("matrícula_treeSort.txt");
+		escrita.escrever(log); // Escreve no arquivo criado o log.
+		escrita.fecharArquivo();
 	}
 
 	public static int qtdLinhas(ArquivoTextoLeitura leitura) {

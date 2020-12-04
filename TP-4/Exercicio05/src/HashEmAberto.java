@@ -2,8 +2,10 @@ public class HashEmAberto {
 
 	private int M;
 	private Jogador[] tabela;
+	private int comparacoes;
 
 	public HashEmAberto(int tamanho) {
+		this.comparacoes = 0;
 		this.M = tamanho;
 		this.tabela = new Jogador[tamanho];
 
@@ -19,8 +21,9 @@ public class HashEmAberto {
 		int k = 0;
 		int posicao;
 		Jogador pesquisado = null;
-
 		while (k < this.M) {
+			this.comparacoes++;
+
 			posicao = funcaoHash(informado.getAltura(), k);
 
 			if (tabela[posicao] == null) {
@@ -58,4 +61,9 @@ public class HashEmAberto {
 		}
 
 	}
+
+	public int getComparacoes() {
+		return this.comparacoes;
+	}
+
 }

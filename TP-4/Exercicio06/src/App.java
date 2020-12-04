@@ -30,6 +30,7 @@ public class App {
 		} while (!(idInformado.equals("FIM")));
 
 		String nome;
+		long inicio = System.currentTimeMillis(); // Para o log
 		do {
 			nome = in.readLine(); // Qual jogador deseja procurar
 
@@ -49,6 +50,21 @@ public class App {
 
 		} while (!(nome.equals("FIM")));
 
+		long fim = System.currentTimeMillis();
+		int comparacoes = tabela.getComparacoes();
+		gerarLog(inicio, fim, comparacoes);
+
+	}
+
+	public static void gerarLog(long inicio, long fim, int comparacoes) {
+		long mili = fim - inicio;
+
+		ArquivoTextoEscrita escrita = new ArquivoTextoEscrita();
+		String log = new String("705903,692669,689603\t" + mili + "\t" + comparacoes);
+
+		escrita.abrirArquivo("matrícula_hashSeparado.txt");
+		escrita.escrever(log); // Escreve no arquivo criado o log.
+		escrita.fecharArquivo();
 	}
 
 	public static int qtdLinhas(ArquivoTextoLeitura leitura) {

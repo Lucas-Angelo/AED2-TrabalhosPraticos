@@ -3,11 +3,13 @@ public class Lista {
 	private int tamanho;
 	private Celula primeiro;
 	private Celula ultimo;
+	private int comparacoes;
 
-	Lista() {
+	public Lista() {
 		primeiro = new Celula();
 		ultimo = primeiro;
 		tamanho = 0;
+		comparacoes = 0;
 	}
 
 	public void inserirInicio(Jogador player) {
@@ -133,6 +135,7 @@ public class Lista {
 
 		aux = primeiro.proximo;
 		while (aux != null && encontrado == null) {
+			comparacoes++;
 			if (aux.item.getNome().equals(procurado))
 				encontrado = aux.item;
 			else
@@ -140,6 +143,10 @@ public class Lista {
 		}
 
 		return encontrado;
+	}
+
+	public int getComparacoes() {
+		return this.comparacoes;
 	}
 
 }

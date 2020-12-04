@@ -2,6 +2,7 @@ public class TabelaHash {
 
 	private Lista[] tabela;
 	private int M; // Bom ser numero primo e ser grande o suficiente pra caber tudo
+	private int comparacoes;
 
 	public TabelaHash(int tamanho) {
 		this.M = tamanho; // Se quiser configurar pra ser numero primo
@@ -9,6 +10,7 @@ public class TabelaHash {
 		for (int i = 0; i < tamanho; i++) {
 			this.tabela[i] = new Lista();
 		}
+		this.comparacoes = 0;
 	}
 
 	// h(x) = x % M
@@ -37,6 +39,7 @@ public class TabelaHash {
 		int posicao = funcaoHash(procurado.getAltura());
 
 		Jogador encontrado = tabela[posicao].localizar(procurado.getNome());
+		this.comparacoes = tabela[posicao].getComparacoes();
 		if (encontrado != null)
 			System.out.print(posicao + " ");
 
@@ -51,6 +54,10 @@ public class TabelaHash {
 	public void imprimir() {
 		for (int i = 0; i < this.M; i++)
 			tabela[i].mostrar(); // Imprimir toda a tabela
+	}
+
+	public int getComparacoes() {
+		return this.comparacoes;
 	}
 
 }

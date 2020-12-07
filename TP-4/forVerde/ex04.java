@@ -16,10 +16,28 @@ public class ex04 {
 
 		ABB arvore = new ABB();
 
+		long inicio = System.currentTimeMillis(); // Para o log
+
 		arvore.inserirTodosJogadores(players);
+
+		long fim = System.currentTimeMillis();
 
 		arvore.imprimirOrdenado();
 
+		int comparacoes = arvore.getComparacoes();
+		gerarLog(inicio, fim, comparacoes);
+
+	}
+
+	public static void gerarLog(long inicio, long fim, int comparacoes) {
+		long mili = fim - inicio;
+
+		ArquivoTextoEscrita escrita = new ArquivoTextoEscrita();
+		String log = new String("705903,692669,689603\t" + mili + "\t" + comparacoes);
+
+		escrita.abrirArquivo("matricula_treeSort.txt");
+		escrita.escrever(log); // Escreve no arquivo criado o log.
+		escrita.fecharArquivo();
 	}
 
 	public static int qtdLinhas(ArquivoTextoLeitura leitura) {
@@ -84,8 +102,10 @@ public class ex04 {
 class ABB {
 
 	private NodoJogador raiz;
+	private int comparacoes;
 
 	public ABB() {
+		this.comparacoes = 0;
 		raiz = null;
 	}
 
@@ -110,6 +130,7 @@ class ABB {
 
 	private NodoJogador adicionar(NodoJogador raizArvore, Jogador novo) {
 
+		this.comparacoes++;
 		// Achou
 		if (raizArvore == null) {
 			raizArvore = new NodoJogador(novo);
@@ -265,8 +286,11 @@ class ABB {
 			return 1 + contarNumJogadores(raizArvore.esquerda) + contarNumJogadores(raizArvore.direita);
 	}
 
-}
+	public int getComparacoes() {
+		return this.comparacoes;
+	}
 
+}
 
 class NodoJogador {
 
@@ -461,5 +485,40 @@ class ArquivoTextoLeitura {
 			return null;
 		}
 		return textoEntrada;
+	}
+}
+
+class ArquivoTextoEscrita {
+
+	private BufferedWriter saida;
+
+	public void abrirArquivo(String nomeArquivo) {
+
+		try {
+			saida = new BufferedWriter(new FileWriter(nomeArquivo));
+		} catch (FileNotFoundException excecao) {
+
+		} catch (IOException excecao) {
+
+		}
+	}
+
+	public void fecharArquivo() {
+
+		try {
+			saida.close();
+		} catch (IOException excecao) {
+
+		}
+	}
+
+	public void escrever(String textoEntrada) {
+
+		try {
+			saida.write(textoEntrada);
+			saida.newLine();
+		} catch (IOException excecao) {
+
+		}
 	}
 }

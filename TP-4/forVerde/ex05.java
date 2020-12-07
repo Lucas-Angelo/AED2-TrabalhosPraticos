@@ -29,6 +29,7 @@ public class ex05 {
 		} while (!(idInformado.equals("FIM")));
 
 		String nome;
+		long inicio = System.currentTimeMillis(); // Para o log
 		do {
 			nome = in.readLine(); // Qual jogador deseja procurar
 
@@ -48,6 +49,21 @@ public class ex05 {
 
 		} while (!(nome.equals("FIM")));
 
+		long fim = System.currentTimeMillis();
+		int comparacoes = tabela.getComparacoes();
+		gerarLog(inicio, fim, comparacoes);
+
+	}
+
+	public static void gerarLog(long inicio, long fim, int comparacoes) {
+		long mili = fim - inicio;
+
+		ArquivoTextoEscrita escrita = new ArquivoTextoEscrita();
+		String log = new String("705903,692669,689603\t" + mili + "\t" + comparacoes);
+
+		escrita.abrirArquivo("matricula_hashRehashing.txt");
+		escrita.escrever(log); // Escreve no arquivo criado o log.
+		escrita.fecharArquivo();
 	}
 
 	public static int qtdLinhas(ArquivoTextoLeitura leitura) {
@@ -113,8 +129,10 @@ class HashEmAberto {
 
 	private int M;
 	private Jogador[] tabela;
+	private int comparacoes;
 
 	public HashEmAberto(int tamanho) {
+		this.comparacoes = 0;
 		this.M = tamanho;
 		this.tabela = new Jogador[tamanho];
 
@@ -130,8 +148,9 @@ class HashEmAberto {
 		int k = 0;
 		int posicao;
 		Jogador pesquisado = null;
-
 		while (k < this.M) {
+			this.comparacoes++;
+
 			posicao = funcaoHash(informado.getAltura(), k);
 
 			if (tabela[posicao] == null) {
@@ -169,6 +188,11 @@ class HashEmAberto {
 		}
 
 	}
+
+	public int getComparacoes() {
+		return this.comparacoes;
+	}
+
 }
 
 class Jogador {
@@ -353,3 +377,37 @@ class ArquivoTextoLeitura {
 	}
 }
 
+class ArquivoTextoEscrita {
+
+	private BufferedWriter saida;
+
+	public void abrirArquivo(String nomeArquivo) {
+
+		try {
+			saida = new BufferedWriter(new FileWriter(nomeArquivo));
+		} catch (FileNotFoundException excecao) {
+
+		} catch (IOException excecao) {
+
+		}
+	}
+
+	public void fecharArquivo() {
+
+		try {
+			saida.close();
+		} catch (IOException excecao) {
+
+		}
+	}
+
+	public void escrever(String textoEntrada) {
+
+		try {
+			saida.write(textoEntrada);
+			saida.newLine();
+		} catch (IOException excecao) {
+
+		}
+	}
+}

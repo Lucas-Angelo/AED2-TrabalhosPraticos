@@ -29,6 +29,7 @@ public class ex06 {
 		} while (!(idInformado.equals("FIM")));
 
 		String nome;
+		long inicio = System.currentTimeMillis(); // Para o log
 		do {
 			nome = in.readLine(); // Qual jogador deseja procurar
 
@@ -48,6 +49,21 @@ public class ex06 {
 
 		} while (!(nome.equals("FIM")));
 
+		long fim = System.currentTimeMillis();
+		int comparacoes = tabela.getComparacoes();
+		gerarLog(inicio, fim, comparacoes);
+
+	}
+
+	public static void gerarLog(long inicio, long fim, int comparacoes) {
+		long mili = fim - inicio;
+
+		ArquivoTextoEscrita escrita = new ArquivoTextoEscrita();
+		String log = new String("705903,692669,689603\t" + mili + "\t" + comparacoes);
+
+		escrita.abrirArquivo("matricula_hashSeparado.txt");
+		escrita.escrever(log); // Escreve no arquivo criado o log.
+		escrita.fecharArquivo();
 	}
 
 	public static int qtdLinhas(ArquivoTextoLeitura leitura) {
@@ -113,6 +129,7 @@ class TabelaHash {
 
 	private Lista[] tabela;
 	private int M; // Bom ser numero primo e ser grande o suficiente pra caber tudo
+	private int comparacoes;
 
 	public TabelaHash(int tamanho) {
 		this.M = tamanho; // Se quiser configurar pra ser numero primo
@@ -120,6 +137,7 @@ class TabelaHash {
 		for (int i = 0; i < tamanho; i++) {
 			this.tabela[i] = new Lista();
 		}
+		this.comparacoes = 0;
 	}
 
 	// h(x) = x % M
@@ -148,6 +166,7 @@ class TabelaHash {
 		int posicao = funcaoHash(procurado.getAltura());
 
 		Jogador encontrado = tabela[posicao].localizar(procurado.getNome());
+		this.comparacoes = tabela[posicao].getComparacoes();
 		if (encontrado != null)
 			System.out.print(posicao + " ");
 
@@ -164,6 +183,10 @@ class TabelaHash {
 			tabela[i].mostrar(); // Imprimir toda a tabela
 	}
 
+	public int getComparacoes() {
+		return this.comparacoes;
+	}
+
 }
 
 class Lista {
@@ -171,11 +194,13 @@ class Lista {
 	private int tamanho;
 	private Celula primeiro;
 	private Celula ultimo;
+	private int comparacoes;
 
-	Lista() {
+	public Lista() {
 		primeiro = new Celula();
 		ultimo = primeiro;
 		tamanho = 0;
+		comparacoes = 0;
 	}
 
 	public void inserirInicio(Jogador player) {
@@ -301,6 +326,7 @@ class Lista {
 
 		aux = primeiro.proximo;
 		while (aux != null && encontrado == null) {
+			comparacoes++;
 			if (aux.item.getNome().equals(procurado))
 				encontrado = aux.item;
 			else
@@ -308,6 +334,10 @@ class Lista {
 		}
 
 		return encontrado;
+	}
+
+	public int getComparacoes() {
+		return this.comparacoes;
 	}
 
 }
@@ -504,3 +534,37 @@ class ArquivoTextoLeitura {
 	}
 }
 
+class ArquivoTextoEscrita {
+
+	private BufferedWriter saida;
+
+	public void abrirArquivo(String nomeArquivo) {
+
+		try {
+			saida = new BufferedWriter(new FileWriter(nomeArquivo));
+		} catch (FileNotFoundException excecao) {
+
+		} catch (IOException excecao) {
+
+		}
+	}
+
+	public void fecharArquivo() {
+
+		try {
+			saida.close();
+		} catch (IOException excecao) {
+
+		}
+	}
+
+	public void escrever(String textoEntrada) {
+
+		try {
+			saida.write(textoEntrada);
+			saida.newLine();
+		} catch (IOException excecao) {
+
+		}
+	}
+}

@@ -58,7 +58,7 @@ public class App {
 		ArquivoTextoEscrita escrita = new ArquivoTextoEscrita();
 		String log = new String("705903,692669,689603\t" + mili + "\t" + comparacoes);
 
-		escrita.abrirArquivo("matrícula_arvoreBinaria.txt");
+		escrita.abrirArquivo("matricula_arvoreBinaria.txt");
 		escrita.escrever(log); // Escreve no arquivo criado o log.
 		escrita.fecharArquivo();
 	}

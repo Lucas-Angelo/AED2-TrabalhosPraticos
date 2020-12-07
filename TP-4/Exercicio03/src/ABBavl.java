@@ -1,277 +1,24 @@
 public class ABBavl {
 
 	private NodoJogador raiz;
+	private int comparacoes;
 
-	public void inserir(Jogador novo) {
-		NodoJogador novoJogador = new NodoJogador(novo);
-		adicionar(this.raiz, novoJogador);
+	public ABBavl() {
+		raiz = null;
+		this.comparacoes = 0;
 	}
 
-	private void adicionar(NodoJogador aComparar, NodoJogador aInserir) {
+	public boolean arvoreVazia() {
 
-		if (aComparar == null) { // Se achou o nodo vazio correto
-			this.raiz = aInserir; // Insere
+		boolean resp;
 
-		} else { // Caso contrario verificar a esquerda e direita pra saber qual lado ir
+		if (raiz == null)
+			resp = true;
+		else
+			resp = false;
 
-			if ((aInserir.item.getNome()).compareTo(aComparar.item.getNome()) < 0) {
-
-				if (aComparar.getEsquerda() == null) {
-					aComparar.setEsquerda(aInserir);
-					aInserir.setPai(aComparar);
-					verificarBalanceamento(aComparar);
-
-				} else {
-					adicionar(aComparar.getEsquerda(), aInserir);
-				}
-
-			} else if ((aInserir.item.getNome()).compareTo(aComparar.item.getNome()) > 0) {
-
-				if (aComparar.getDireita() == null) {
-					aComparar.setDireita(aInserir);
-					aInserir.setPai(aComparar);
-					verificarBalanceamento(aComparar);
-
-				} else {
-					adicionar(aComparar.getDireita(), aInserir);
-				}
-
-			} else {
-				System.out.println("O jogador " + aInserir.item.getNome() + ", cuja id e " + aInserir.item.getId()
-						+ ", ja foi inserido anteriormente na arvore.");
-			}
-		}
+		return resp;
 	}
-
-	private void verificarBalanceamento(NodoJogador atual) {
-		setBalanceamento(atual);
-		int balanceamento = atual.getBalanceamento();
-
-		if (balanceamento == -2) {
-
-			if (altura(atual.getEsquerda().getEsquerda()) >= altura(atual.getEsquerda().getDireita())) {
-				atual = rotacaoDireita(atual);
-
-			} else {
-				atual = duplaRotacaoEsquerdaDireita(atual);
-			}
-
-		} else if (balanceamento == 2) {
-
-			if (altura(atual.getDireita().getDireita()) >= altura(atual.getDireita().getEsquerda())) {
-				atual = rotacaoEsquerda(atual);
-
-			} else {
-				atual = duplaRotacaoDireitaEsquerda(atual);
-			}
-		}
-
-		if (atual.getPai() != null) {
-			verificarBalanceamento(atual.getPai());
-		} else {
-			this.raiz = atual;
-		}
-	}
-
-	public void remover(Jogador aRemover) {
-		removerAVL(this.raiz, aRemover);
-	}
-
-	private void removerAVL(NodoJogador atual, Jogador aRemover) {
-		if (atual == null) {
-			return;
-
-		} else {
-
-			if ((atual.item.getNome()).compareTo(aRemover.getNome()) > 0) {
-				removerAVL(atual.getEsquerda(), aRemover);
-
-			} else if ((atual.item.getNome()).compareTo(aRemover.getNome()) < 0) {
-				removerAVL(atual.getDireita(), aRemover);
-
-			} else if ((atual.item.getNome()).equals(aRemover.getNome())) {
-				removerNoEncontrado(atual);
-			}
-		}
-	}
-
-	private void removerNoEncontrado(NodoJogador aRemover) {
-		NodoJogador r;
-
-		if (aRemover.getEsquerda() == null || aRemover.getDireita() == null) {
-
-			if (aRemover.getPai() == null) {
-				this.raiz = null;
-				aRemover = null;
-				return;
-			}
-			r = aRemover;
-
-		} else {
-			r = sucessor(aRemover);
-			aRemover.setChave(r.getChave());
-		}
-
-		NodoJogador p;
-		if (r.getEsquerda() != null) {
-			p = r.getEsquerda();
-		} else {
-			p = r.getDireita();
-		}
-
-		if (p != null) {
-			p.setPai(r.getPai());
-		}
-
-		if (r.getPai() == null) {
-			this.raiz = p;
-		} else {
-			if (r == r.getPai().getEsquerda()) {
-				r.getPai().setEsquerda(p);
-			} else {
-				r.getPai().setDireita(p);
-			}
-			verificarBalanceamento(r.getPai());
-		}
-		r = null;
-	}
-
-	private NodoJogador rotacaoEsquerda(NodoJogador inicial) {
-
-		NodoJogador direita = inicial.getDireita();
-		direita.setPai(inicial.getPai());
-
-		inicial.setDireita(direita.getEsquerda());
-
-		if (inicial.getDireita() != null) {
-			inicial.getDireita().setPai(inicial);
-		}
-
-		direita.setEsquerda(inicial);
-		inicial.setPai(direita);
-
-		if (direita.getPai() != null) {
-
-			if (direita.getPai().getDireita() == inicial) {
-				direita.getPai().setDireita(direita);
-
-			} else if (direita.getPai().getEsquerda() == inicial) {
-				direita.getPai().setEsquerda(direita);
-			}
-		}
-
-		setBalanceamento(inicial);
-		setBalanceamento(direita);
-
-		return direita;
-	}
-
-	private NodoJogador rotacaoDireita(NodoJogador inicial) {
-
-		NodoJogador esquerda = inicial.getEsquerda();
-		esquerda.setPai(inicial.getPai());
-
-		inicial.setEsquerda(esquerda.getDireita());
-
-		if (inicial.getEsquerda() != null) {
-			inicial.getEsquerda().setPai(inicial);
-		}
-
-		esquerda.setDireita(inicial);
-		inicial.setPai(esquerda);
-
-		if (esquerda.getPai() != null) {
-
-			if (esquerda.getPai().getDireita() == inicial) {
-				esquerda.getPai().setDireita(esquerda);
-
-			} else if (esquerda.getPai().getEsquerda() == inicial) {
-				esquerda.getPai().setEsquerda(esquerda);
-			}
-		}
-
-		setBalanceamento(inicial);
-		setBalanceamento(esquerda);
-
-		return esquerda;
-	}
-
-	private NodoJogador duplaRotacaoEsquerdaDireita(NodoJogador inicial) {
-		inicial.setEsquerda(rotacaoEsquerda(inicial.getEsquerda()));
-		return rotacaoDireita(inicial);
-	}
-
-	private NodoJogador duplaRotacaoDireitaEsquerda(NodoJogador inicial) {
-		inicial.setDireita(rotacaoDireita(inicial.getDireita()));
-		return rotacaoEsquerda(inicial);
-	}
-
-	private NodoJogador sucessor(NodoJogador q) {
-		if (q.getDireita() != null) {
-			NodoJogador r = q.getDireita();
-			while (r.getEsquerda() != null) {
-				r = r.getEsquerda();
-			}
-			return r;
-		} else {
-			NodoJogador p = q.getPai();
-			while (p != null && q == p.getDireita()) {
-				q = p;
-				p = q.getPai();
-			}
-			return p;
-		}
-	}
-
-	private int altura(NodoJogador atual) {
-		if (atual == null) {
-			return -1;
-		}
-
-		if (atual.getEsquerda() == null && atual.getDireita() == null) {
-			return 0;
-
-		} else if (atual.getEsquerda() == null) {
-			return 1 + altura(atual.getDireita());
-
-		} else if (atual.getDireita() == null) {
-			return 1 + altura(atual.getEsquerda());
-
-		} else {
-			return 1 + Math.max(altura(atual.getEsquerda()), altura(atual.getDireita()));
-		}
-	}
-
-	private void setBalanceamento(NodoJogador no) {
-		no.setBalanceamento(altura(no.getDireita()) - altura(no.getEsquerda()));
-	}
-
-	/* Usei esses imprimir para testes */
-//	public void imprimirEmOrdem() {
-//		imprimirEmOrdem(raiz);
-//	}
-//
-//	private void imprimirEmOrdem(NodoJogador raizArvore) { // Caso queira imprirmir decrescente só trocar o .esquerda
-//
-//		if (raizArvore != null) { // Verificar nao o no de agora nao esta nulo
-//			imprimirEmOrdem(raizArvore.esquerda);
-//			System.out.print(raizArvore.item.getNome() + " | ");
-//			imprimirEmOrdem(raizArvore.direita);
-//		}
-//
-//	}
-//
-//	public void imprimirEmPreOrdem() {
-//		imprimirEmPreOrdem(raiz);
-//	}
-//
-//	void imprimirEmPreOrdem(NodoJogador node) {
-//		if (node != null) {
-//			System.out.print(node.item.getNome() + " ");
-//			imprimirEmPreOrdem(node.esquerda);
-//			imprimirEmPreOrdem(node.direita);
-//		}
-//	}
 
 	public Jogador buscar(String nomePesquisado) {
 		Jogador pesquisado;
@@ -289,6 +36,7 @@ public class ABBavl {
 	private NodoJogador pesquisar(NodoJogador raizArvore, String nomePesquisado) {
 
 		NodoJogador pesquisado;
+		this.comparacoes++;
 
 		if (raizArvore == null)
 			pesquisado = null;
@@ -308,4 +56,125 @@ public class ABBavl {
 		return pesquisado;
 	}
 
+	private NodoJogador adicionar(NodoJogador raizArvore, Jogador jogadorNovo) {
+		if (raizArvore == null)
+			raizArvore = new NodoJogador(jogadorNovo);
+		else {
+			if ((raizArvore.item.getNome()).compareTo(jogadorNovo.getNome()) > 0)
+				raizArvore.esquerda = adicionar(raizArvore.esquerda, jogadorNovo);
+			else {
+				if ((raizArvore.item.getNome()).compareTo(jogadorNovo.getNome()) < 0)
+					raizArvore.direita = adicionar(raizArvore.direita, jogadorNovo);
+				else
+					System.out.println("O jogador " + jogadorNovo.getNome() + ", cuja id e " + jogadorNovo.getId()
+							+ ", ja foi inserido anteriormente na arvore.");
+			}
+		}
+
+		return balancear(raizArvore);
+	}
+
+	public void inserir(Jogador jogadorNovo) {
+		this.raiz = adicionar(this.raiz, jogadorNovo);
+	}
+
+	private NodoJogador balancear(NodoJogador raizArvore) {
+		int fatorBalanceamento;
+		int fatorBalanceamentoFilho;
+
+		fatorBalanceamento = raizArvore.getFatorBalanceamento();
+
+		if (fatorBalanceamento >= 2) { // Desbalanceado a esquerda
+
+			fatorBalanceamentoFilho = raizArvore.esquerda.getFatorBalanceamento();
+
+			// Caso que necessita de rotacao simples para a direita, filho esta
+			// desbalanceado para o mesmo lado que o pai, dai atualiza a raiz da subarvore
+			if ((fatorBalanceamentoFilho) == 0 || (fatorBalanceamentoFilho == 1))
+				raizArvore = rotacionarDireita(raizArvore);
+			// Caso em que o filho esta desbalanceado para direita e o pai para esquerda,
+			// dai precisa de rotacao dupla
+			else if (fatorBalanceamentoFilho == -1) {
+				raizArvore.esquerda = rotacionarEsquerda(raizArvore.esquerda); // Primeiro rotacionar o filho a esquerda
+				raizArvore = rotacionarDireita(raizArvore); // Agora rotaciona o pai
+			}
+		} else if (fatorBalanceamento <= -2) { // Desbalanceado para a direita
+
+			fatorBalanceamentoFilho = raizArvore.direita.getFatorBalanceamento();
+
+			// Rotacao simples a esquerda
+			if ((fatorBalanceamentoFilho == -1) || (fatorBalanceamentoFilho == 0)) {
+				raizArvore = rotacionarEsquerda(raizArvore);
+			}
+			// Dai nesse caso precisa de rotacao dupla
+			else if (fatorBalanceamentoFilho == 1) {
+				raizArvore.direita = rotacionarDireita(raizArvore.direita); // Rotaciona filho
+				raizArvore = rotacionarEsquerda(raizArvore); // Rotaciona o pai
+			}
+
+		} else
+			raizArvore.setAltura();
+
+		return raizArvore;
+	}
+
+	private NodoJogador rotacionarEsquerda(NodoJogador p) {
+
+		NodoJogador z;
+		NodoJogador filhoDireitaEsquerda; // Triangulo vermelho, o auxiliar
+
+		z = p.direita;
+		filhoDireitaEsquerda = z.esquerda;
+
+		// p torna-se o filho a esquerda de z
+		z.esquerda = p;
+
+		// p antigo filho a esquerda de z torna-se o novo filho a direita de p
+		p.direita = filhoDireitaEsquerda;
+
+		// Quando faz essas rotacoes as alturas podem ter sido alteradas
+
+		p.setAltura();
+		z.setAltura();
+
+		return z;
+	}
+
+	private NodoJogador rotacionarDireita(NodoJogador p) {
+
+		NodoJogador u;
+		NodoJogador filhoEsquerdaDireita; // Triangulo vermelho, usado com auxiliar para nao perder
+
+		u = p.esquerda;
+		filhoEsquerdaDireita = u.direita;
+
+		// p torna-se o filho a direita de u
+		u.direita = p;
+
+		// o antigo filho a direita de u torna-se o novo filho a esquerda de p
+		p.esquerda = filhoEsquerdaDireita;
+
+		p.setAltura();
+		u.setAltura();
+
+		return u;
+	}
+
+	public void imprimirEmOrdem() {
+		imprimirEmOrdem(raiz);
+	}
+
+	private void imprimirEmOrdem(NodoJogador raizArvore) { // Caso queira imprirmir decrescente só trocar o .esquerda
+
+		if (raizArvore != null) { // Verificar nao o no de agora nao esta nulo
+			imprimirEmOrdem(raizArvore.esquerda);
+			System.out.println(raizArvore.item.getNome());
+			imprimirEmOrdem(raizArvore.direita);
+		}
+
+	}
+
+	public int getComparacoes() {
+		return this.comparacoes;
+	}
 }

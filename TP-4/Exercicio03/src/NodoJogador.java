@@ -2,59 +2,54 @@ public class NodoJogador {
 
 	NodoJogador esquerda;
 	NodoJogador direita;
-	NodoJogador pai;
 	Jogador item;
-	int balanceamento;
+	private int altura;
 
 	public NodoJogador(Jogador item) {
-		setEsquerda(setDireita(setPai(null)));
-		setBalanceamento(0);
-		setChave(item);
-	}
-
-//	public String toString() {
-//		return Integer.toString(getChave());
-//	}
-
-	public Jogador getChave() {
-		return item;
-	}
-
-	public void setChave(Jogador item) {
 		this.item = item;
+		this.esquerda = this.direita = null;
+		this.altura = 0;
 	}
 
-	public int getBalanceamento() {
-		return balanceamento;
+	public int getAltura() {
+		return this.altura;
 	}
 
-	public void setBalanceamento(int balanceamento) {
-		this.balanceamento = balanceamento;
+	public void setAltura() {
+		int alturaEsquerda;
+		int alturaDireita;
+
+		if (esquerda != null)
+			alturaEsquerda = esquerda.getAltura();
+		else
+			alturaEsquerda = -1;
+
+		if (direita != null)
+			alturaDireita = direita.getAltura();
+		else
+			alturaDireita = -1;
+
+		if (alturaEsquerda >= alturaDireita)
+			this.altura = alturaEsquerda + 1;
+		else
+			this.altura = alturaDireita + 1;
 	}
 
-	public NodoJogador getPai() {
-		return pai;
+	public int getFatorBalanceamento() {
+		int alturaEsquerda;
+		int alturaDireita;
+
+		if (esquerda != null)
+			alturaEsquerda = esquerda.getAltura();
+		else
+			alturaEsquerda = -1;
+
+		if (direita != null)
+			alturaDireita = direita.getAltura();
+		else
+			alturaDireita = -1;
+
+		return (alturaEsquerda - alturaDireita); // O balanceamento e a diferenca entre a altura da esq e dir
 	}
 
-	public NodoJogador setPai(NodoJogador pai) {
-		this.pai = pai;
-		return pai;
-	}
-
-	public NodoJogador getDireita() {
-		return direita;
-	}
-
-	public NodoJogador setDireita(NodoJogador direita) {
-		this.direita = direita;
-		return direita;
-	}
-
-	public NodoJogador getEsquerda() {
-		return esquerda;
-	}
-
-	public void setEsquerda(NodoJogador esquerda) {
-		this.esquerda = esquerda;
-	}
 }

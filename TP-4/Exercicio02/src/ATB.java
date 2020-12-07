@@ -23,8 +23,8 @@ public class ATB {
 				raizArvore.esquerda = adicionar(raizArvore.esquerda, jogadorNovo);
 			else if ((raizArvore.chave) < (jogadorNovo.getAltura() % 17))
 				raizArvore.direita = adicionar(raizArvore.direita, jogadorNovo);
-			else{
-				if (raizArvore.meio == null){
+			else {
+				if (raizArvore.meio == null) {
 					raizArvore.meio = new ABB();
 				}
 				raizArvore.meio.inserir(jogadorNovo);
@@ -61,12 +61,11 @@ public class ATB {
 		else {
 			if (raizArvore.chave == alturaPesquisada) {
 				System.out.print(raizArvore.chave + " ");
-				System.out.print(raizArvore.item.getNome() + " ");
-				if ( nomePesquisado.equals(raizArvore.item.getNome()) )
+				if (nomePesquisado.equals(raizArvore.item.getNome()))
 					pesquisado = new NodoATB(buscado);
-				else if ( raizArvore.meio == null )
+				else if (raizArvore.meio == null)
 					pesquisado = null;
-				else{
+				else {
 					Jogador resBusca = raizArvore.meio.buscar(nomePesquisado);
 					if (resBusca == null)
 						pesquisado = null;
@@ -74,14 +73,11 @@ public class ATB {
 						pesquisado = new NodoATB(resBusca);
 
 				}
-				
-			
-			} 
-			else if ( alturaPesquisada < raizArvore.chave ) {
+
+			} else if (alturaPesquisada < raizArvore.chave) {
 				System.out.print(raizArvore.chave + " ");
 				pesquisado = pesquisar(raizArvore.esquerda, buscado);
-			} 
-			else {
+			} else {
 				System.out.print(raizArvore.chave + " ");
 				pesquisado = pesquisar(raizArvore.direita, buscado);
 			}

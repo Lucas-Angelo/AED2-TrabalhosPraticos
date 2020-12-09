@@ -2,8 +2,10 @@
 public class ATB {
 
 	private NodoATB raiz;
+	private int comparacoes;
 
 	public ATB() {
+		comparacoes = 0;
 		raiz = null;
 	}
 
@@ -15,19 +17,19 @@ public class ATB {
 	}
 
 	private NodoATB adicionar(NodoATB raizArvore, Jogador jogadorNovo) {
+
 		if (raizArvore == null)
 			raizArvore = new NodoATB(jogadorNovo);
 		else {
-
 			if ((raizArvore.chave) > (jogadorNovo.getAltura() % 17))
 				raizArvore.esquerda = adicionar(raizArvore.esquerda, jogadorNovo);
 			else if ((raizArvore.chave) < (jogadorNovo.getAltura() % 17))
 				raizArvore.direita = adicionar(raizArvore.direita, jogadorNovo);
 			else {
-				if (raizArvore.meio == null) {
-					raizArvore.meio = new ABB();
-				}
-				raizArvore.meio.inserir(jogadorNovo);
+				if (raizArvore.meio == null)
+					raizArvore.meio = new ABB(jogadorNovo);
+				else
+					raizArvore.meio.inserir(jogadorNovo);
 			}
 		}
 		return raizArvore;
@@ -38,52 +40,34 @@ public class ATB {
 	}
 
 	public Jogador buscar(Jogador buscado) {
-		Jogador pesquisado;
-
-		NodoATB resultado = pesquisar(raiz, buscado);
-
-		if (resultado == null)
-			pesquisado = null;
-		else
-			pesquisado = resultado.item;
-
-		return pesquisado;
+		return pesquisar(raiz, buscado);
 	}
 
-	private NodoATB pesquisar(NodoATB raizArvore, Jogador buscado) {
+	private Jogador pesquisar(NodoATB raizArvore, Jogador buscado) {
 
-		NodoATB pesquisado = null;
+		Jogador pesquisado = null;
 		int alturaPesquisada = buscado.getAltura() % 17;
 		String nomePesquisado = buscado.getNome();
+		comparacoes++;
 
 		if (raizArvore == null)
 			pesquisado = null;
 		else {
+			System.out.print(raizArvore.chave + " ");
 			if (raizArvore.chave == alturaPesquisada) {
-				System.out.print(raizArvore.chave + " ");
-				if (nomePesquisado.equals(raizArvore.item.getNome()))
-					pesquisado = new NodoATB(buscado);
-				else if (raizArvore.meio == null)
-					pesquisado = null;
-				else {
-					Jogador resBusca = raizArvore.meio.buscar(nomePesquisado);
-					if (resBusca == null)
-						pesquisado = null;
-					else
-						pesquisado = new NodoATB(resBusca);
-
-				}
-
-			} else if (alturaPesquisada < raizArvore.chave) {
-				System.out.print(raizArvore.chave + " ");
+				pesquisado = raizArvore.meio.buscar(nomePesquisado);
+				comparacoes += raizArvore.meio.getComparacoes();
+			} else if (alturaPesquisada < raizArvore.chave) 
 				pesquisado = pesquisar(raizArvore.esquerda, buscado);
-			} else {
-				System.out.print(raizArvore.chave + " ");
+			else
 				pesquisado = pesquisar(raizArvore.direita, buscado);
-			}
 		}
 
 		return pesquisado;
+	}
+
+	public int getComparacoes() {
+		return comparacoes;
 	}
 
 }

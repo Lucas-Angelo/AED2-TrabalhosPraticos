@@ -1,9 +1,15 @@
 public class ABB {
 
 	private NodoABB raiz;
+	private int comparacoes;
 
 	public ABB() {
 		raiz = null;
+		comparacoes = 0;
+	}
+	public ABB (Jogador registro){
+		raiz = new NodoABB(registro);
+		comparacoes = 0;
 	}
 
 	public Boolean arvoreVazia() {
@@ -50,6 +56,7 @@ public class ABB {
 	private NodoABB pesquisar(NodoABB raizArvore, String nomePesquisado) {
 
 		NodoABB pesquisado;
+		comparacoes++;
 
 		if (raizArvore == null)
 			pesquisado = null;
@@ -65,6 +72,10 @@ public class ABB {
 		}
 
 		return pesquisado;
+	}
+
+	public int getComparacoes() {
+		return comparacoes;
 	}
 
 }
